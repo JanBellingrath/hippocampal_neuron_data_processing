@@ -2,7 +2,7 @@
 
 Data-Processing pipeline for neuronal time series data.
 
-Extensive adoption of, and slight modifications on, the data-processing pipeline developed by the Loren Frank Lab:
+Extensive adoption, as well as slight modifications, of the data-processing pipeline developed by the Loren Frank Lab:
 https://github.com/Eden-Kramer-Lab/loren_frank_data_processing/tree/v0.9.13.dev0/loren_frank_data_processing
 
 At the moment, this repository contains:
