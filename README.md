@@ -7,7 +7,6 @@ https://github.com/Eden-Kramer-Lab/loren_frank_data_processing/tree/v0.9.13.dev0
 
 At the moment, this repository contains:
 1. A file adopting (partially modified) functions of the Loren_Frank_Dataprocessing Pipeline for access in JupyterNotebook
-2. A file adopting (again, partially modified) functions from Loren_Frank_Dataprocessing Pipeline for access in GoogleColab
 
 The resulting output of the data-processing pipeline is intended for estimating the neuronal branching factor (criticality-analysis; https://doi.org/10.1371/journal.pone.0249447; https://mrestimator.readthedocs.io/en/latest/doc/gettingstarted.html; toolbox developed by Spitzner et. al (2021)).
    
