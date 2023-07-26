@@ -301,7 +301,9 @@ def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals
                         spike_time_array = None
                         try:
                             spike_time_array = sdd.spike_time_index_association(neuron_key, animals).values.astype(np.int32)
-                    
+                            neuron_key_counter += 1
+                            state_day_epoch_neuron_key_dict[state][day][epoch][neuron_key_counter] = spike_time_array
+                            
                         except AttributeError:
                             spike_time_array = None
                             print(f"No spike indicator data for neuron: {neuron_key}")
@@ -311,12 +313,5 @@ def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals
                          #   neuron_key_list.append(i)
                             
                         
-                        neuron_key_counter += 1
-                    
-                    
-                        state_day_epoch_neuron_key_dict[state][day][epoch][neuron_key_counter] = spike_time_array
                         
     return state_day_epoch_neuron_key_dict
-
-
-                
