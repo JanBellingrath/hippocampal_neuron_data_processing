@@ -45,6 +45,3 @@ def get_matching_pairs(dataframe, multiindex):
 
 # In[ ]:
 
-
-
-
