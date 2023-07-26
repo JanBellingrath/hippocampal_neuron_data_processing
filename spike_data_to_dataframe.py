@@ -149,11 +149,64 @@ def make_neuron_dataframe_modified(animals):
     ]).sort_index()
 
 
+def time_index_dict(state_day_epoch_neuron_key_dict, animals):
+    '''Input: state_day_epoch_neuron_key_dict: embedded state_day_epoch_neuron_key dict
+        Returns: spike indicator dict of time index of spike trains per day epoch combination
+    '''
+    time_dict = {}
+    for state in state_day_epoch_neuron_key_dict:
+        time_dict[state] = {}
+        for day in state_day_epoch_neuron_key_dict[state]:
+            time_dict[state][day] = {}
+            for epoch in state_day_epoch_neuron_key_dict[state][day]:
+                time_dict[state][day][epoch] = {}
+                for neuron_key_str in state_day_epoch_neuron_key_dict[state][day][epoch]:
+                    
+                    animal_short_name, day_number, epoch_number, tetrode_number, neuron_number = neuron_key_str.split("_")
+                    neuron_key = (animal_short_name, int(day_number), int(epoch_number), int(tetrode_number), int(neuron_number))
+                    try:
+                        time_dict[state][day][epoch][neuron_key] = spike_time_index_association(neuron_key, animals).index
+                    except:
+                        continue
+    return time_dict
+    
+    
+#The problem with the function below is that it takes too long too evaluate, because the time index is taken
+#from every neuron individually. Is no problem though, cause we just need to determine the time-array-resolution from them
+#and having the resolution we can generate the index ourselves (and put it onto the whole epoch, as oppposed to every individual spike train)
+#(actally, after checking, the time index is the same for all neuron in an epoch, which solves the problem.)I let this function here in case I need it sometime
+def time_index_and_coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals):
+    '''Input: state_day_epoch_neuron_key_dict: embedded state_day_epoch_neuron_key dict
+        Returns: spike indicator dict of spike trains per day epoch combination
+    '''
+    output_dict = {}
+    for state in state_day_epoch_neuron_key_dict:
+        output_dict[state] = {}
+        for day in state_day_epoch_neuron_key_dict[state]:
+            output_dict[state][day] = {}
+            for epoch in state_day_epoch_neuron_key_dict[state][day]:
+                output_dict[state][day][epoch] = {}
+                for neuron_key_str in state_day_epoch_neuron_key_dict[state][day][epoch]:
+                    
+                    animal_short_name, day_number, epoch_number, tetrode_number, neuron_number = neuron_key_str.split("_")
+                    neuron_key = (animal_short_name, int(day_number), int(epoch_number), int(tetrode_number), int(neuron_number))
+                    try:
+                        spike_array_values = spike_time_index_association(neuron_key, animals).values.astype(np.int32)
+
+                        spike_array_index = spike_time_index_association(neuron_key, animals).index
+                    except AttributeError:
+                        spike_array_values = None
+                        spike_array_index = None
+                        print(f"No spike indicator data for neuron: {neuron_key}")
+                    print(spike_array_values)
+                    if spike_array_values is not None and spike_array_index is not None:
+                        spike_train_dict = dict(zip(spike_array_index, spike_array_values))
+                        output_dict[state][day][epoch][neuron_key_str] = spike_train_dict
+                        
+    return state_day_epoch_neuron_key_dict
 
 
 
 # In[ ]:
-
-
 
 
