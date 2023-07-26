@@ -74,6 +74,8 @@ def get_LFP_filename_modified(tetrode_key, animals):
         filename = '/home/bellijjy/Corriander.tar/Corriander/EEG/Cor' + filename
     if animal == 'dav':
         filename = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename
+    #if animal == dave:
+     #   filename = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename wrong here PROBABLY
     if animal == 'dud':
         filename = '/home/bellijjy/Dudley/EEG/dud' + filename
     if animal == 'con':
@@ -85,6 +87,7 @@ def get_LFP_filename_modified(tetrode_key, animals):
     if animal == 'rem':
         filename = '/home/bellijjy/Remi.tar/Remi/EEG/rem' + filename
     return filename
+#the above is not yet finished, I need to insert the values for the other animals - IFF everything works with the target loc
 
 def get_tetrode_info_path(animal):
     '''Returns the Matlab tetrode info file name assuming it is in the
@@ -98,13 +101,15 @@ def get_tetrode_info_path(animal):
     -------
     filename : str
         The path to the information about the tetrodes for a given animal.'''
-    print(type(animal))
+    
     filename = 'tetinfo.mat'
    
     if animal == 'Cor':
         joined = '/home/bellijjy/Corriander.tar/Corriander/Cor' + filename
     if animal == 'dav':
         joined = '/home/bellijjy/Dave.tar/Dave/Dave/dav' + filename
+    #if animal == dave:
+     #   joined = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename
     if animal == 'dud':
         joined = '/home/bellijjy/Dudley/dud' + filename
     if animal == 'con':
@@ -116,9 +121,32 @@ def get_tetrode_info_path(animal):
     if animal == 'rem':
         joined = '/home/bellijjy/Remi.tar/Remi/rem' + filename
     return joined
-
+#the above is not yet finished, I need to insert the values for the other animals - IFF everything works with the target loc
 
 def make_tetrode_dataframe(animals, epoch_key=None):
+    """Information about all tetrodes such as recording location.
+    Parameters
+    ----------
+    animals : dict of named-tuples
+        Dictionary containing information about the directory for each
+        animal. 
+    Returns
+    -------
+    tetrode_infomation : pandas.DataFrame
+    """
+    tetrode_info = []
+    if epoch_key is not None:
+        animal, day, epoch = epoch_key
+        
+        file_name = get_tetrode_info_path(animal)
+        tet_info = loadmat(file_name, squeeze_me=True)["tetinfo"]
+        tetrode_info.append(
+            convert_tetrode_epoch_to_dataframe(
+                tet_info[day - 1][epoch - 1], epoch_key))
+        return pd.concat(tetrode_info, sort=True)
+
+
+def make_tetrode_dataframe_old(animals, epoch_key=None):
     """Information about all tetrodes such as recording location.
     Parameters
     ----------
@@ -194,12 +222,14 @@ def get_trial_time(epoch_key, animals):
     time : pandas.Index
     """
     tetrode_info = make_tetrode_dataframe(animals, epoch_key=epoch_key)
+ 
     for tetrode_key in tetrode_info.index:
         lfp_df = get_LFP_dataframe(tetrode_key, animals)
+        
         if lfp_df is not None:
             break
-
-    return lfp_df.index.rename("time")
+    if lfp_df is not None:
+        return lfp_df.index.rename("time")
 
 
 def _get_tetrode_id(dataframe):
@@ -244,7 +274,5 @@ def convert_tetrode_epoch_to_dataframe(tetrodes_in_epoch, epoch_key):
 
 
 # In[ ]:
-
-
 
 
