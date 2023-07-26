@@ -7,6 +7,8 @@
 import pandas as pd
 import numpy as np
 from scipy.io import loadmat
+import os
+from shutil import copyfile
 
 #this function is unused currently
 def _convert_to_dict_modified(struct_array):
@@ -178,6 +180,106 @@ def convert_neuron_epoch_to_dataframe_modified(tetrodes_in_epoch, animal, day, e
 def time_array_from_index_of_series(series):
     time_array = [i for i in speed_array.index.values]
     return time_array
+
+
+
+def store_files(file_paths, file_names, file_type='data'):
+    """
+    Store files in a specified folder on your PC.
+
+    Arguments:
+    file_paths -- A list of file paths.
+    file_names -- A list of file names.
+    file_type (optional) -- The type of the files. Default is 'data'.
+
+    Returns:
+    None
+    """
+    if len(file_paths) != len(file_names):
+        print("Error: The number of file paths and file names should be the same.")
+        return
+
+    valid_file_types = ['data', 'txt', 'csv', 'json', 'pickle']  # Add or modify valid file types as needed
+
+    if file_type not in valid_file_types:
+        print(f"Error: Invalid file type '{file_type}'. Valid file types are: {', '.join(valid_file_types)}")
+        return
+
+    # Define the destination folder path
+    destination_folder = 'data_dav'
+
+    # Create the destination folder if it doesn't exist
+    os.makedirs(destination_folder, exist_ok=True)
+
+    for path, name in zip(file_paths, file_names):
+        # Construct the file destination path
+        file_destination = os.path.join(destination_folder, f"{name}.{file_type}")
+
+        # Copy the file to the destination folder
+        copyfile(path, file_destination)
+
+    print("Files copied successfully!")
+
+
+
+def load_data(file_name, destination_folder):
+    """
+    Load data from a file.
+
+    Arguments:
+    file_path -- The path of the file to be loaded.
+
+    Returns:
+    The loaded data.
+    """
+    # Construct the file destination path
+    file_type = 'data'
+    file_destination = os.path.join(destination_folder, f"{file_name}.{file_type}")
+    
+    if not os.path.isfile(file_destination):
+        print(f"Error: File '{file_destination}' does not exist.")
+        return None
+
+    with open(file_destination, 'r') as file:
+        data = file.read()
+
+    return data
+
+def store_data(data, file_name, file_type='data', destination_folder=''):
+    """
+    Store data in a specified folder on your PC.
+
+    Arguments:
+    data -- The data to be stored.
+    file_name -- The name of the file.
+    file_type (optional) -- The type of the file. Default is 'data'.
+    destination_folder (optional) -- The destination folder path. If not provided, files will be stored in the current working directory.
+
+    Returns:
+    None
+    """
+    valid_file_types = ['data', 'txt', 'csv', 'json', 'pickle']  # Add or modify valid file types as needed
+
+    if file_type not in valid_file_types:
+        print(f"Error: Invalid file type '{file_type}'. Valid file types are: {', '.join(valid_file_types)}")
+        return
+
+    # Use the current working directory if destination_folder is not provided
+    if not destination_folder:
+        destination_folder = os.getcwd()
+
+    # Create the destination folder if it doesn't exist
+    os.makedirs(destination_folder, exist_ok=True)
+
+    # Construct the file destination path
+    file_destination = os.path.join(destination_folder, f"{file_name}.{file_type}")
+
+    # Save the data to the destination file
+    with open(file_destination, 'w') as file:
+        file.write(str(data))
+
+    print("File stored successfully!")
+
 
 
 
