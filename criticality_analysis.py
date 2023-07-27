@@ -1,9 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[3]:
-
-import mrestimator as mre
+ import mrestimator as mre
 import pandas as pd
 
 def add_padded_arrays_by_epoch(time_series_dict):
@@ -30,14 +26,17 @@ def add_padded_arrays_by_epoch(time_series_dict):
                     state_day_epoch_time_series_dict[state][epoch] = padded_curr_arr + padded_new_arr
 
     return state_day_epoch_time_series_dict
-'''
+
 def run_analysis_without_time_index_summed_over_days(embedded_spike_time_series_dict, numboot, coefficientmethod, targetdir, title, dt, dtunit, tmin, tmax, fitfuncs):
+    '''
     Input: embedded_dict with spike trains summed over neurons and days (result from add_padded_arrays_by_epoch), other parameters are from MRE
         Returns: output_dict of parameters for state and epoch
+       '''
     output_dict = {'wake': {}, 'sleep': {}}  
     
     for state in embedded_spike_time_series_dict:
         for epoch in embedded_spike_time_series_dict[state]:
+            
             if state not in output_dict:  
                 output_dict[state] = {} 
             
@@ -55,7 +54,7 @@ def run_analysis_without_time_index_summed_over_days(embedded_spike_time_series_
             )
     
     return output_dict
-'''
+
 
 def run_analysis_with_time_index_and_time_chunks(embedded_spike_time_series_dict, numboot, coefficientmethod, targetdir, title, dt, dtunit, tmin, tmax, fitfuncs):
      
@@ -100,20 +99,28 @@ def run_analysis_with_time_index_and_time_chunks(embedded_spike_time_series_dict
     return final_output_dict               
    
 
-def run_analysis(embedded_spike_time_series_dict, numboot, coefficientmethod, targetdir, title, dt, dtunit, tmin, tmax, fitfuncs):
+def run_analysis_without_time_sep(embedded_spike_time_series_dict, numboot, coefficientmethod, targetdir, title, dt, dtunit, tmin, tmax, fitfuncs):
     output_dict = {}
     for state in embedded_spike_time_series_dict:
+        output_dict[state] = {}
         for day in embedded_spike_time_series_dict[state]:
+            output_dict[state][day] = {}
             for epoch in embedded_spike_time_series_dict[state][day]:
-                output_dict[state][day][epoch] = mre.full_analysis(
-                    data= embedded_spike_time_series_dict[state][day][epoch],
-                    numboot = 5,
-                    coefficientmethod='ts',
-                    targetdir='./output',
-                    title='Full Analysis',
-                    dt=4, dtunit='ms',
-                    tmin=0, tmax=8000,
-                    fitfuncs=['complex'])
+                output_dict[state][day][epoch] = {}
+                
+                try: 
+                    output_dict[state][day][epoch] = mre.full_analysis(
+                        data= embedded_spike_time_series_dict[state][day][epoch].values,
+                        numboot = 5,
+                        coefficientmethod='ts',
+                        targetdir='./output',
+                        title='Full Analysis',
+                        dt=dt, dtunit=dtunit,
+                        tmin=tmin, tmax=tmax,
+                        fitfuncs=['complex'])
+                except:
+                    pass
+                
     return output_dict
 
 def output_handler_dict_data_generator_small(output_handler_dict, data):
@@ -197,12 +204,16 @@ def bijective_output_to_index_mapping(embedded_spike_time_series_dict, data):
 
 
 def non_finite_element_checker(splitted_by_sec_spike_dict):
+    '''
+    Returns the unique state, day, epoch, time_chunk combination in which a corr coeff is resultant which is non-finite
+    '''
+    
     non_finite_element_list = []
     for state in splitted_by_sec_spike_dict:
         for day in splitted_by_sec_spike_dict[state]:
             for epoch in splitted_by_sec_spike_dict[state][day]:
                 for time_chunk in splitted_by_sec_spike_dict[state][day][epoch]:
-                    rk = mre.coefficients(splitted_by_sec_spike_dict[state][day][epoch][time_chunk].values, dtunit=0.0006663619999969228 )
+                    rk = mre.coefficients(splitted_by_sec_spike_dict[state][day][epoch][time_chunk].values, dtunit=0.000666)
                     for i in rk.coefficients:
                         if not np.isfinite(i):
                             time_chunk_key = '_'.join([str(state), str(day) ,str(epoch), str(time_chunk)])
@@ -259,6 +270,8 @@ def run_analysis(embedded_spike_time_series_dict, numboot, coefficientmethod, ta
     
     return output_list
 # In[ ]:
+
+
 
 
 
