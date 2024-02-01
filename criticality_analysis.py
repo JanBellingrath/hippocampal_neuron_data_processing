@@ -1,5 +1,5 @@
 
- import mrestimator as mre
+import mrestimator as mre
 import pandas as pd
 
 def add_padded_arrays_by_epoch(time_series_dict):
