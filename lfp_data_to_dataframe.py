@@ -20,19 +20,22 @@ def get_LFP_dataframe(tetrode_key, animals):
     '''Gets the LFP data for a given epoch and tetrode.
     Parameters
     ----------
-_data_to_dataframe.py tuple
+    _data_to_dataframe.py tuple
         Unique key identifying the tetrode. Elements are
         (animal_short_name, day, epoch, tetrode_number).
     animals : dict of named-tuples
         Dictionary containing information about the directory for each
         animal. The key is the animal_short_name.
+
+
     Returns
     -------
-    LFP : pandas dataframe
-        Contains the electric potential and time
+    LFP : pandas Series dataframe
+        Contains the electric potential with corresponding time index
     '''
+    filename = get_LFP_filename_modified(tetrode_key, animals)
     try:
-        lfp_file = loadmat(get_LFP_filename_modified(tetrode_key, animals))
+        lfp_file = loadmat(filename)
         lfp_data = lfp_file['eeg'][0, -1][0, -1][0, -1]
         lfp_time = reconstruct_time(
             lfp_data['starttime'][0, 0].item(),
@@ -42,12 +45,16 @@ _data_to_dataframe.py tuple
             data=lfp_data['data'][0, 0].squeeze().astype(float),
             index=lfp_time,
             name='{0}_{1:02d}_{2:02}_{3:03}'.format(*tetrode_key))
+    
     except (FileNotFoundError, TypeError):
-        print('Failed to load file: {0}'.format(
-            get_LFP_filename_modified(tetrode_key, animals)))
+        print('Failed to load file: {0}'.format(filename))
+
     #I could add other try blocks to handle data of different format
 
+
+
 def get_LFP_filename_modified(tetrode_key, animals):
+    #check parameters: is animals dictionary here even neccessary?
 
     '''Returns a file name for the tetrode file LFP for an epoch.
     Parameters
@@ -70,24 +77,28 @@ def get_LFP_filename_modified(tetrode_key, animals):
                     day=day, epoch=epoch,
                     tetrode_number=tetrode_number)
    
-    if animal == 'Cor':
-        filename = '/home/bellijjy/Corriander.tar/Corriander/EEG/Cor' + filename
-    if animal == 'dav':
-        filename = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename
+    animal_paths = {
+        'Cor': '/home/bellijjy/Corriander.tar/Corriander/EEG/Cor',
+        'dav': '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav',
+        'dud': '/home/bellijjy/Dudley/EEG/dud',
+        'con': '/home/bellijjy/Conley.tar/Conley/EEG/con',
+        'cha': '/home/bellijjy/Chapati.tar/Chapati/Chapati/EEG/cha',
+        'bon': '/home/bellijjy/Bond/EEG/bon',
+        'rem': '/home/bellijjy/Remi.tar/Remi/EEG/rem'
+        }
+
+    if animal in animal_paths:
+        filename = animal_paths[animal] + filename
+
+    else:
+        print("error: no match to tetrode key found")
+    
+    #the above is not yet finished, I need to insert the values for the other animals - IFF everything works with the target loc
     #if animal == dave:
-     #   filename = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename wrong here PROBABLY
-    if animal == 'dud':
-        filename = '/home/bellijjy/Dudley/EEG/dud' + filename
-    if animal == 'con':
-        filename = '/home/bellijjy/Conley.tar/Conley/EEG/con' + filename
-    if animal == 'cha':
-        filename = '/home/bellijjy/Chapati.tar/Chapati/Chapati/EEG/cha' + filename
-    if animal == 'bon':
-        filename = '/home/bellijjy/Bond/EEG/bon' + filename
-    if animal == 'rem':
-        filename = '/home/bellijjy/Remi.tar/Remi/EEG/rem' + filename
+    #filename = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename wrong here PROBABLY
     return filename
-#the above is not yet finished, I need to insert the values for the other animals - IFF everything works with the target loc
+
+
 
 def get_tetrode_info_path(animal):
     '''Returns the Matlab tetrode info file name assuming it is in the
@@ -97,31 +108,30 @@ def get_tetrode_info_path(animal):
     animal : namedtuple
         First element is the directory where the animal's data is located.
         The second element is the animal shortened name.
+        
     Returns
     -------
     filename : str
         The path to the information about the tetrodes for a given animal.'''
-    
-    filename = 'tetinfo.mat'
-   
-    if animal == 'Cor':
-        joined = '/home/bellijjy/Corriander.tar/Corriander/Cor' + filename
-    if animal == 'dav':
-        joined = '/home/bellijjy/Dave.tar/Dave/Dave/dav' + filename
+
+    animal_paths = {
+        'Cor': '/home/bellijjy/Corriander.tar/Corriander/Cor',
+        'dav': '/home/bellijjy/Dave.tar/Dave/Dave/dav',
+        'dud': '/home/bellijjy/Dudley/dud',
+        'con': '/home/bellijjy/Conley.tar/Conley/con',
+        'cha': '/home/bellijjy/Chapati.tar/Chapati/Chapati/cha',
+        'bon': '/home/bellijjy/Bond/bon',
+        'rem': '/home/bellijjy/Remi.tar/Remi/rem'
+        }
+
+    if animal in animal_paths:
+        filename = animal_paths[animal] + 'tetinfo.mat'
+
+    return filename
+    #the above is not yet finished, I need to insert the values for the other animals - IFF everything works with the target loc
     #if animal == dave:
-     #   joined = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + filename
-    if animal == 'dud':
-        joined = '/home/bellijjy/Dudley/dud' + filename
-    if animal == 'con':
-        joined = '/home/bellijjy/Conley.tar/Conley/con' + filename
-    if animal == 'cha':
-        joined = '/home/bellijjy/Chapati.tar/Chapati/Chapati/cha' + filename
-    if animal == 'bon':
-        joined = '/home/bellijjy/Bond/bon' + filename
-    if animal == 'rem':
-        joined = '/home/bellijjy/Remi.tar/Remi/rem' + filename
-    return joined
-#the above is not yet finished, I need to insert the values for the other animals - IFF everything works with the target loc
+        #   filename = '/home/bellijjy/Dave.tar/Dave/Dave/EEG/dav' + "tetinfo.mat"
+
 
 def make_tetrode_dataframe(animals, epoch_key=None):
     """Information about all tetrodes such as recording location.
