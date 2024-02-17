@@ -9,11 +9,26 @@ import pandas as pd
 from scipy.io import loadmat
 from os.path import join 
 
-from lfp_data_to_dataframe_final import get_trial_time
+from lfp_data_to_dataframe_final import get_sampling_rate
 from loren_frank_data_processing.neurons import get_neuron_info_path, convert_neuron_epoch_to_dataframe
 
 
 def generate_spike_indicator_dict(neuron_key_list, animals):
+    ''' creates for each neuron in neuron_key_list a tuple containing the information. 
+    Trys for each neuron to create spike_time_array.
+    Returns dictionary with spike time arrays and neuron_keys as keys. 
+
+    Parameters
+    ----------
+    neuron_key_list : list
+        strings of unique keys to identify single neuron in specific epoch
+    animals : dict
+
+    Returns
+    ----------
+    spike_indicator_dict : dictionary
+        dictionary of spike_time_array s and unique neuron_keys as keys
+    '''
     spike_indicator_dict = {}
     for neuron_key_str in neuron_key_list:
         animal_short_name, day_number, epoch_number, tetrode_number, neuron_number = neuron_key_str.split("_")
@@ -28,6 +43,8 @@ def generate_spike_indicator_dict(neuron_key_list, animals):
             
         spike_indicator_dict[neuron_key] = spike_time_array
     return spike_indicator_dict
+
+
 
 def get_data_filename(animal, day, file_type):
     '''Returns the Matlab file name assuming it is in the Raw Data
@@ -54,7 +71,8 @@ def get_data_filename(animal, day, file_type):
     return join(animal.short_name, filename)
     
 def get_spikes_series(neuron_key, animals):
-    '''Spike times for a particular neuron.
+    '''Loads spikes for given neuron and creates pandas dataframe with 
+    with spiking times as index
 
     Parameters
     ----------
@@ -80,17 +98,23 @@ def get_spikes_series(neuron_key, animals):
         print('Failed to load file: {0}'.format(
             get_data_filename(animals[animal], day, 'spikes')))
         
-    if neuron_file != []:
+    if neuron_file:
         try:
             spike_time = neuron_file['spikes'][0, -1][0, epoch - 1][
             0, tetrode_number - 1][0, neuron_number - 1][0]['data'][0][
             :, 0]
+
+            # using the neuron file to create pandas index of spiking times
             spike_time = pd.TimedeltaIndex(spike_time, unit='s', name='time')
         except IndexError:
             spike_time = []
+
+        # maybe check runtime if pandas Series should be saved instead of being created twice
         print(pd.Series(
         np.ones_like(spike_time, dtype=int), index=spike_time,
         name='{0}_{1:02d}_{2:02}_{3:03}_{4:03}'.format(*neuron_key)))
+
+    # create indexed array with 1s as placeholders for actual data
     return pd.Series(
         np.ones_like(spike_time, dtype=int), index=spike_time,
         name='{0}_{1:02d}_{2:02}_{3:03}_{4:03}'.format(*neuron_key))
@@ -98,23 +122,42 @@ def get_spikes_series(neuron_key, animals):
 
 
   
-def spike_time_index_association(neuron_key, animals, time_function=get_trial_time):
+def spike_time_index_association(neuron_key, animals, time_function=get_sampling_rate):
+    ''' Calls by default get_sampling_rate() to get the sampling rate of the recording. 
+    Creates dataframe of spiking times of neuron. Fits the spiking times in bins and returns indexed dataframe
     
+    Parameters
+    ----------
+    neuron_key : tuple
+        unique key to identify neuron in epoch
+    animals : dictionary
+    time_function : function
+        default to get_sampling_time
+        gets reference recording of same epoch to create time bins
+    '''
     time = time_function(neuron_key[:3], animals)
+    # get reference spikes_df
+    # seems hugely inefficient, as this will be constructed for every single neuron?
+    # even if it will be the same for every epoch.
     spikes_df = get_spikes_series(neuron_key, animals)
     
     time_index = None
     
+    # fit times of spikes_df into bins of sampling rate
     try:
         time_index = np.digitize(spikes_df.index.total_seconds(),
                              time.total_seconds())
  
+        # account for times of spikes_df that are later than recoring time of reference
+        # means that last bin would be overvalued
         time_index[time_index >= len(time)] = len(time) -1
     
     except AttributeError: 
         print('No spikes here; data is emtpy')
     
-    #the following accounts for an empty time_index
+    # spikes are grouped by bins.
+    # then number of spikes for each bin are summed up.
+    # value in bin shouldn´t be higher than 1, since binsize corresponds to sampling rate
     if time_index is not None:
         return (spikes_df.groupby(time[time_index]).sum().reindex(index=time, fill_value=0))
         
@@ -138,8 +181,10 @@ def make_neuron_dataframe_modified(animals):
     neuron_file_names = [(get_neuron_info_path(animals[animal]), animal)
                          for animal in animals]
     
+    # create list of tuples with cellinfo.mat - files and the corresponding animal short name
     neuron_data = [(loadmat(file_name[0]), animal_name) for animal_name, file_name in zip(animals.keys(), neuron_file_names)]
 
+    # loop through all animals, days and epochs 
     return pd.concat([
         convert_neuron_epoch_to_dataframe(
             epoch, animal, day_ind + 1, epoch_ind + 1)
@@ -151,8 +196,10 @@ def make_neuron_dataframe_modified(animals):
 
 def time_index_dict(state_day_epoch_neuron_key_dict, animals):
     '''Input: state_day_epoch_neuron_key_dict: embedded state_day_epoch_neuron_key dict
-        Returns: spike indicator dict of time index of spike trains per day epoch combination
+        Returns: spike indicator dict of time index of spike trains per state day epoch combination
     '''
+    # loop over state, day, epoch and neuron_keys
+
     time_dict = {}
     for state in state_day_epoch_neuron_key_dict:
         time_dict[state] = {}
@@ -203,7 +250,7 @@ def time_index_and_coarse_grained_spike_generator_dict(state_day_epoch_neuron_ke
                         spike_train_dict = dict(zip(spike_array_index, spike_array_values))
                         output_dict[state][day][epoch][neuron_key_str] = spike_train_dict
                         
-    return state_day_epoch_neuron_key_dict
+    return output_dict
 
 
 

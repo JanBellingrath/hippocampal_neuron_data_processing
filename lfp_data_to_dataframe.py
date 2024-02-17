@@ -217,7 +217,7 @@ def make_tetrode_dataframe_old(animals, epoch_key=None):
 
 
 
-def get_trial_time(epoch_key, animals):
+def get_sampling_rate(epoch_key, animals):
     """Time in the recording session in terms of the LFP.
     This will return the LFP time of the first tetrode found (according to the
     tetrode info). This is useful when there are slightly different timings
@@ -288,33 +288,5 @@ def convert_tetrode_epoch_to_dataframe(tetrodes_in_epoch, epoch_key):
 
 
 # In[ ]:
-
-'''
-Questions for Jan:
-    - make animals a global variable? 
-        -> wouldnt need to pass it as a variable every time
-    - difference between tetrode_dataframe and LFP_dataframe?
-    - in get_LFP_dataframe: why? 
-        lfp_data = lfp_file['eeg'][0, -1][0, -1][0, -1] ?
-        (always last element?)
-    - in make_tetrode_dataframe:
-        why make epoch_key optional?
-        also: why does epoch_key contain the Animal(named_tuple)? 
-            Wouldn´t just the short_name be sufficient?
-        in the end, why use the concat() function? Isn´t there only on dataframe in the list?
-    - in get_trial_time:
-        is this the main function? 
-        why does it return after the first tetrode dataset?
-        Wouldn´t it be more efficient to construct all LFP-dataframes, since they will
-            be used later anyway?
-        What about the tetrode_info dataframe? Is it used in other instances, too?
-            If not, it would seem simpler to just construct a list containing all possible tetrode names
-            I can see make_tetrode_dataframe() being imported to compactifying_functions,
-                but it isn´t used
-    - also, help for downloading hc-6 dataset would be great!!
-
-
-        
-'''
 
 

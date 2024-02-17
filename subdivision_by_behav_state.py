@@ -7,6 +7,7 @@
 #speed_array = _get_pos_dataframe_modified((conley,1,1), animals)['speed']
 import spike_data_to_dataframe_final as sdd
 import numpy as np
+import pandas as pd
 
 def sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, current_element):
     ''''

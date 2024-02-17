@@ -12,7 +12,7 @@ import mrestimator as mre
 import spike_data_to_dataframe_final as sdd
 from spike_data_to_dataframe_final import spike_time_index_association
 import utilities as u
-from lfp_data_to_dataframe_final import make_tetrode_dataframe, get_trial_time
+from lfp_data_to_dataframe_final import make_tetrode_dataframe, get_sampling_rate
 import df_subdivision_by_theme as divis
 import subdivision_by_behav_state as behav
 import sum_and_seperate_spike_trains as sum_sep
