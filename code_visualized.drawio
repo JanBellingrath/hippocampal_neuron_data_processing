@@ -1,0 +1,382 @@
+<mxfile host="Electron" modified="2024-02-16T13:01:13.157Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.0.2 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="ag_Xeb5scOJJ1XF9epoG" version="23.0.2" type="device" pages="2">
+  <diagram name="lfp_data_to_dataframe" id="-0uksRFyBczqt4jlq0a1">
+    <mxGraphModel dx="521" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-81" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=none;opacity=30;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="30" y="220" width="780" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="RaqQBiWEhMCcIaRFbFzj-1" value="Animal" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="230" y="20" width="110" height="120" as="geometry">
+            <mxRectangle x="85" y="410" width="80" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="RaqQBiWEhMCcIaRFbFzj-2" value="&lt;b&gt;named tuple&lt;/b&gt;&lt;br&gt;short name (str)&lt;br&gt;directory (str)" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;" parent="RaqQBiWEhMCcIaRFbFzj-1" vertex="1">
+          <mxGeometry y="50" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="LlTql3OOBmvr-bSs323o-11" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-14" target="o5KsQYPWXhAWBM8Yx2KQ-23" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="362.5" y="1045" as="sourcePoint" />
+            <mxPoint x="352.5" y="1070" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="LlTql3OOBmvr-bSs323o-12" value="try" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="LlTql3OOBmvr-bSs323o-11" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-1" value="tetrode_key:&lt;br&gt;tuple" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="92.5" y="580" width="120" height="140" as="geometry">
+            <mxRectangle x="70" y="340" width="110" height="50" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-2" value="short name (str)&lt;br&gt;day (int)&lt;br&gt;epoch (int)&lt;br&gt;tetrode number (int)" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-1" vertex="1">
+          <mxGeometry y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-14" value="get_LFP_dataframe" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="92.5" y="740" width="160" height="220" as="geometry">
+            <mxRectangle x="260" y="260" width="150" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-15" value="loads the LFP recordings, reconstructs the time and returns the EEG data with corresponding time index" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-14" vertex="1">
+          <mxGeometry y="26" width="160" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-16" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-14" vertex="1">
+          <mxGeometry y="100" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-17" value="&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Parameters&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;tetrode_key: list&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;animals: dict&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;returns&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;EEG dataframe: pandas Series&lt;/p&gt;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-14" vertex="1">
+          <mxGeometry y="108" width="160" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-18" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-14" target="o5KsQYPWXhAWBM8Yx2KQ-19" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="392.5" y="1220" as="sourcePoint" />
+            <mxPoint x="452.5" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-19" value="&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;get_LFP_filename_modified&lt;br&gt;&lt;br&gt;&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="318.5" y="740" width="190" height="190" as="geometry">
+            <mxRectangle x="520" y="385" width="200" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-20" value="&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Description&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;Reads tetrode_key and returns the filename for the corresponding EEG file&amp;nbsp;&lt;/p&gt;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-19" vertex="1">
+          <mxGeometry y="26" width="190" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-21" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-19" vertex="1">
+          <mxGeometry y="100" width="190" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-22" value="&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Parameters&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;tetrode_key: dict&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;animals: dict&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;returns&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;filename (string)&lt;/p&gt;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-19" vertex="1">
+          <mxGeometry y="108" width="190" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-23" value="&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;reconstruct_time&lt;br&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;i&gt;loren_frank_data_processing.core&lt;/i&gt;&lt;/span&gt;&lt;br&gt;&lt;/span&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="330" y="960" width="185" height="194" as="geometry">
+            <mxRectangle x="530" y="250" width="140" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-24" value="reconstructs the recording time of EEG" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-23" vertex="1">
+          <mxGeometry y="40" width="185" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-25" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-23" vertex="1">
+          <mxGeometry y="74" width="185" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-26" value="&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Paramters&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;start_time: float&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;n_samples: int&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;sampling frequency: float&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;returns&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;timestamps: pandas index&lt;/p&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-23" vertex="1">
+          <mxGeometry y="82" width="185" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-30" value="&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;get_tetrode_info_path&lt;/b&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="312.5" y="510" width="160" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-31" value="returns filename of info sheet for the tetrodes used in an animal&lt;br&gt;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-30" vertex="1">
+          <mxGeometry y="26" width="160" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-32" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-30" vertex="1">
+          <mxGeometry y="80" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-33" value="&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Parameters&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;animal&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;returns&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 4px;&quot;&gt;filename: string&lt;/p&gt;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-30" vertex="1">
+          <mxGeometry y="88" width="160" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-34" value="make_tetrode_dataframe" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="318.5" y="260" width="160" height="210" as="geometry">
+            <mxRectangle x="260" y="510" width="180" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-35" value="if epoch_key:&lt;br&gt;finds &amp;amp; loads relevant file, creates a dataframe with information about all tetrodes for one animal &amp;amp; epoch&amp;nbsp;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-34" vertex="1">
+          <mxGeometry y="26" width="160" height="94" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-36" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-34" vertex="1">
+          <mxGeometry y="120" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-37" value="&lt;b&gt;Parameters&lt;/b&gt;&lt;br&gt;animals: dict&lt;br&gt;epoch_key: tuple&lt;br&gt;&lt;b&gt;returns&lt;br&gt;&lt;/b&gt;tetrodes: pandas Dataframe" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-34" vertex="1">
+          <mxGeometry y="128" width="160" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-38" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-34" target="o5KsQYPWXhAWBM8Yx2KQ-30" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="340" as="sourcePoint" />
+            <mxPoint x="500" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-39" value="animals:&lt;br&gt;dict" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="10" y="20" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-40" value="contains named tuples&lt;br&gt;(short_name, directory)&lt;br&gt;key: short_name" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-39" vertex="1">
+          <mxGeometry y="50" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-43" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-39" target="RaqQBiWEhMCcIaRFbFzj-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="720" y="110" as="sourcePoint" />
+            <mxPoint x="820" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-44" value="contains" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="o5KsQYPWXhAWBM8Yx2KQ-43" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-45" value="epoch_key&lt;br&gt;tuple" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="20" width="150" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-46" value="Animal (named tuple)&lt;br&gt;day (int)&lt;br&gt;epoch (int)" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-45" vertex="1">
+          <mxGeometry y="50" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-47" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-45" target="RaqQBiWEhMCcIaRFbFzj-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="660" y="140" as="sourcePoint" />
+            <mxPoint x="760" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-48" value="contains" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="o5KsQYPWXhAWBM8Yx2KQ-47" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-50" value="convert_tetrode_epoch_to_dataframe" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="260" width="240" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-51" value="creates dataframe for given epoch and animal, containing information about each tetrode" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-50" vertex="1">
+          <mxGeometry y="26" width="240" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-52" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-50" vertex="1">
+          <mxGeometry y="70" width="240" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-53" value="&lt;b&gt;Parameters&lt;/b&gt;&lt;br&gt;tetrodes_in_epoch: matlab structure , containing data for tetrode in sepcific epoch&lt;br&gt;epoch_key&lt;br&gt;&lt;b&gt;returns&lt;br&gt;&lt;/b&gt;pandas dataframe containing information for all tetrodes during one epoch" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-50" vertex="1">
+          <mxGeometry y="78" width="240" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-54" value="_convert_to_dict&lt;br&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;i&gt;utilities.py&lt;/i&gt;&lt;/span&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="595" y="20" width="160" height="164" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-55" value="converts matlab data structure into dictionary" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-54" vertex="1">
+          <mxGeometry y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-56" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-54" vertex="1">
+          <mxGeometry y="80" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-57" value="&lt;b&gt;Parameters&lt;/b&gt;&lt;br&gt;struct_array&lt;br&gt;&lt;b&gt;returns&lt;br&gt;&lt;/b&gt;dictionary" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-54" vertex="1">
+          <mxGeometry y="88" width="160" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-58" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-34" target="o5KsQYPWXhAWBM8Yx2KQ-50" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="570" as="sourcePoint" />
+            <mxPoint x="440" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-60" value="_get_tetrode_id" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="555" y="510" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-61" value="constructs unique string to identify a tetrode dataset&amp;nbsp;" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-60" vertex="1">
+          <mxGeometry y="26" width="160" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-62" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-60" vertex="1">
+          <mxGeometry y="70" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-63" value="&lt;b&gt;Parameters&lt;/b&gt;&lt;br&gt;datapoints as set in parent function&lt;br&gt;&lt;b&gt;returns&lt;br&gt;&lt;/b&gt;tetrode_id: str" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-60" vertex="1">
+          <mxGeometry y="78" width="160" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-65" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-50" target="o5KsQYPWXhAWBM8Yx2KQ-60" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="720" as="sourcePoint" />
+            <mxPoint x="800" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-66" value="for each&lt;br&gt;tetrode" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="o5KsQYPWXhAWBM8Yx2KQ-65" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-67" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-50" target="o5KsQYPWXhAWBM8Yx2KQ-54" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="890" y="800" as="sourcePoint" />
+            <mxPoint x="990" y="800" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-68" value="for each&lt;br&gt;tetrode" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="o5KsQYPWXhAWBM8Yx2KQ-67" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-69" value="get_trial_time" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="72.5" y="226" width="160" height="258" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-70" value="creates dataframe with all tetrodes for given animal and epoch. Extracts for each tetrode a key and tries to get LFP data. Indexes the data with recording time and returns after first succesful try" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-69" vertex="1">
+          <mxGeometry y="26" width="160" height="124" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-71" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="o5KsQYPWXhAWBM8Yx2KQ-69" vertex="1">
+          <mxGeometry y="150" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-72" value="&lt;b&gt;Parameters&lt;/b&gt;&lt;br&gt;epoch_key: tuple&lt;br&gt;animals: dict&lt;br&gt;&lt;b&gt;returns&lt;br&gt;&lt;/b&gt;pandas.series of first tetrode" style="text;strokeColor=none;fillColor=default;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="o5KsQYPWXhAWBM8Yx2KQ-69" vertex="1">
+          <mxGeometry y="158" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-73" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-69" target="o5KsQYPWXhAWBM8Yx2KQ-34" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="310" as="sourcePoint" />
+            <mxPoint x="320" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-75" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-69" target="o5KsQYPWXhAWBM8Yx2KQ-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="380" as="sourcePoint" />
+            <mxPoint x="300" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-76" value="for each&lt;br&gt;tetrode" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="o5KsQYPWXhAWBM8Yx2KQ-75" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-77" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-1" target="o5KsQYPWXhAWBM8Yx2KQ-14" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="40" y="630" as="sourcePoint" />
+            <mxPoint x="90" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-79" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-69" target="o5KsQYPWXhAWBM8Yx2KQ-39" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="40" y="210" as="sourcePoint" />
+            <mxPoint x="200" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-80" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-69" target="o5KsQYPWXhAWBM8Yx2KQ-45" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="260" y="210" as="sourcePoint" />
+            <mxPoint x="420" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-84" value="tetinfo.mat" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;gradientColor=none;" parent="1" vertex="1">
+          <mxGeometry x="480" y="155" width="70" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-82" value="" style="image;aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image=img/lib/active_directory/folder.svg;verticalAlign=top;spacingLeft=4;spacingRight=4;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;gradientColor=none;" parent="1" vertex="1">
+          <mxGeometry x="496.75" y="176" width="36.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-85" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=default;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-34" target="o5KsQYPWXhAWBM8Yx2KQ-84" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="230" as="sourcePoint" />
+            <mxPoint x="490" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-86" value="eeg.mat" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;gradientColor=none;" parent="1" vertex="1">
+          <mxGeometry x="139" y="1008" width="67" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-87" value="" style="image;aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image=img/lib/active_directory/folder.svg;verticalAlign=top;spacingLeft=4;spacingRight=4;fontFamily=Helvetica;fontSize=12;fontColor=default;fillColor=default;gradientColor=none;" parent="1" vertex="1">
+          <mxGeometry x="154.25" y="1032" width="36.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-88" value="" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;fontFamily=Helvetica;fontSize=12;fontColor=default;" parent="1" source="o5KsQYPWXhAWBM8Yx2KQ-14" target="o5KsQYPWXhAWBM8Yx2KQ-86" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="140" y="1110" as="sourcePoint" />
+            <mxPoint x="300" y="1110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="o5KsQYPWXhAWBM8Yx2KQ-89" value="&lt;b style=&quot;font-size: 15px;&quot;&gt;lfp_data_to_dataframe.py&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontFamily=Helvetica;fontColor=#66CC00;" parent="1" vertex="1">
+          <mxGeometry x="610" y="880" width="200" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="d__1o8oyOz5zzBq8Bvek" name="Seite-2">
+    <mxGraphModel dx="521" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7mdBuQqQ-y1JUvnb9XyT-1" value="generate_spike_indicator_dict" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="190" height="208" as="geometry" />
+        </mxCell>
+        <mxCell id="7mdBuQqQ-y1JUvnb9XyT-2" value="Creates dictionary containing spike_time_array for each neuron in neuron_key_list (if possible)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="7mdBuQqQ-y1JUvnb9XyT-1">
+          <mxGeometry y="26" width="190" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="7mdBuQqQ-y1JUvnb9XyT-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="7mdBuQqQ-y1JUvnb9XyT-1">
+          <mxGeometry y="90" width="190" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="7mdBuQqQ-y1JUvnb9XyT-4" value="&lt;b&gt;Parameters:&lt;/b&gt;&lt;br&gt;neuron_key_list : list&lt;br&gt;animals: dict&lt;br&gt;&lt;br&gt;&lt;b&gt;Returns:&lt;br&gt;&lt;/b&gt;spike_indicator_dict : dict&lt;br&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="7mdBuQqQ-y1JUvnb9XyT-1">
+          <mxGeometry y="98" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g2CLSODwSxWzm6G2cVPB-1" value="spike_time_index_association" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="320" width="190" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="g2CLSODwSxWzm6G2cVPB-2" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="g2CLSODwSxWzm6G2cVPB-1">
+          <mxGeometry y="26" width="190" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="g2CLSODwSxWzm6G2cVPB-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="g2CLSODwSxWzm6G2cVPB-1">
+          <mxGeometry y="52" width="190" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="g2CLSODwSxWzm6G2cVPB-4" value="&lt;b&gt;Parameters:&lt;/b&gt;&lt;br&gt;neuron_key : tuple&lt;br&gt;animals: dict&lt;br&gt;time_function : function&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;default: get_trial_time&lt;br&gt;&lt;br&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="g2CLSODwSxWzm6G2cVPB-1">
+          <mxGeometry y="60" width="190" height="120" as="geometry" />
+        </mxCell>
+        <UserObject label="get_trial_time" id="8KNnNg794SSowEfshs3F-1">
+          <mxCell style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+            <mxGeometry x="65" y="585" width="160" height="221" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="lfp_data_to_dataframe" link="data:page/id,-0uksRFyBczqt4jlq0a1" id="H-U6_kTbfZDA7HSlPmmQ-1">
+          <mxCell style="fontColor=#0000EE;fontStyle=4;rounded=1;overflow=hidden;spacing=10;" vertex="1" parent="8KNnNg794SSowEfshs3F-1">
+            <mxGeometry y="25" width="160" height="40" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="8KNnNg794SSowEfshs3F-2" value="returns indexed dataframe of first tetrode in epoch" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="8KNnNg794SSowEfshs3F-1">
+          <mxGeometry y="65" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="8KNnNg794SSowEfshs3F-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="8KNnNg794SSowEfshs3F-1">
+          <mxGeometry y="110" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="8KNnNg794SSowEfshs3F-4" value="&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;Parameters&lt;/b&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;epoch_key: tuple&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;animals: dict&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;returns&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/b&gt;pandas.series of first tetrode" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="8KNnNg794SSowEfshs3F-1">
+          <mxGeometry y="118" width="160" height="103" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-1" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="g2CLSODwSxWzm6G2cVPB-1" target="8KNnNg794SSowEfshs3F-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="570" as="sourcePoint" />
+            <mxPoint x="230" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-2" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="7mdBuQqQ-y1JUvnb9XyT-1" target="g2CLSODwSxWzm6G2cVPB-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="290" as="sourcePoint" />
+            <mxPoint x="460" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-3" value="get_spikes_series" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="331" width="160" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-4" value="trys loading spike data and creates dataframe with spiking times as index" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-3">
+          <mxGeometry y="26" width="160" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-5" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-3">
+          <mxGeometry y="80" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-6" value="&lt;b&gt;Parameters:&lt;/b&gt;&lt;br&gt;neuron_key : tuple&lt;br&gt;animals : dict&lt;br&gt;&lt;b&gt;returns:&lt;br&gt;&lt;/b&gt;indexed pandas series of ones" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-3">
+          <mxGeometry y="88" width="160" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-7" value="get_data_filename" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="570" width="160" height="208" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-8" value="creates filepath for given animal, day, and filetype (e.g. &quot;spikes&quot;)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-7">
+          <mxGeometry y="26" width="160" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-9" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-7">
+          <mxGeometry y="80" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-10" value="&lt;b&gt;Parameters:&lt;/b&gt;&lt;br&gt;animal : named tuple&lt;br&gt;day : int&lt;br&gt;file_type : str&lt;br&gt;&lt;br&gt;&lt;b&gt;returns:&lt;/b&gt;&lt;br&gt;filename : str" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-7">
+          <mxGeometry y="88" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-11" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="g2CLSODwSxWzm6G2cVPB-1" target="g5oyrcMVJ4MPL10y0QXJ-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="370" y="550" as="sourcePoint" />
+            <mxPoint x="420" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-14" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="g5oyrcMVJ4MPL10y0QXJ-3" target="g5oyrcMVJ4MPL10y0QXJ-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="410" y="480" as="sourcePoint" />
+            <mxPoint x="510" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="g5oyrcMVJ4MPL10y0QXJ-15" value="try" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="g5oyrcMVJ4MPL10y0QXJ-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
