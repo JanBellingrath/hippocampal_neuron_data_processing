@@ -1,4 +1,4 @@
-# Hippocampal_Neuron_Data_Processing
+# hippocampal_neuron_data_processing
 
 Data-Processing pipeline for neuronal time series data.
 
