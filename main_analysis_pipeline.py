@@ -23,7 +23,7 @@ import mrestimator as mre
 
 import utilities as u
 import criticality_analysis as can
-import compactifying_functions as compact
+from tools import compactifying_functions as compact
 
 
 # ### Defining each animal via its short name and its directory
