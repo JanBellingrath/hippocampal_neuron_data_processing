@@ -3,7 +3,7 @@
 
 # In[4]:
 
-import spike_data_frame_new as sdd
+import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
 import numpy as np
 import pandas as pd
 
@@ -214,7 +214,7 @@ def generate_spike_indicator_dict_relative_to_behav_state(behav_state_dict, day_
         
         
                     #try:
-        spike_time_array = spike_time_index_association(neuron_key, animals)
+        spike_time_array = sdd.spike_time_index_association(neuron_key, animals)
                         
         association_dict = time_association_behav_state_spike_time(spike_time_array, day_specific_state_day_epoch_neuron_key_dict, behav_state_dict)
     

@@ -13,16 +13,16 @@ from scipy.io import loadmat
 from collections import namedtuple
 
 import mrestimator as mre
-import spike_data_frame_new as sdd
-from spike_data_frame_new import spike_time_index_association
-import utilities as u
-from lfp_data_frame_new import make_tetrode_dataframe, get_trial_time
+import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
+from pipeline.spike_data_to_dataframe_up_to_date_version import spike_time_index_association
+import pipeline.utilities as u
+from pipeline.lfp_data_to_dataframe_up_to_date_version import make_tetrode_dataframe, get_trial_time
 import df_subdivision_by_theme as divis
-import subdivision_by_behav_state as behav
+import pipeline.subdivision_by_behav_state_up_to_date_version as behav
 import sum_and_seperate_spike_trains as sum_sep
 #import criticality_analysis as can
 
-import task_new_final as task
+import task_up_to_date_version as task
 
 import loren_frank_data_processing
 import loren_frank_data_processing.core

@@ -11,7 +11,6 @@
 
 # In[1]:
 
-
 import mrestimator as mre
 import numpy as np
 
@@ -22,12 +21,12 @@ import numpy as np
 # In[2]:
 
 
-import utilities as u
+import pipeline.utilities as u
 import criticality_analysis as can
-import compactifying_functions as compact
+import compactifying_functions_up_to_date_version as compact
 
-
-# ### Defining each animal via its short name and its directory
+# ### Defining each animal via its short name and its dir
+# ectory
 
 # In[3]:
 
