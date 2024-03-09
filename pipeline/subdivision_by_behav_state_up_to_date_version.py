@@ -3,7 +3,10 @@
 
 # In[4]:
 
-import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
+try:
+    import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
+except:
+    import spike_data_to_dataframe_up_to_date_version
 import numpy as np
 import pandas as pd
 
@@ -12,6 +15,22 @@ def sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_mo
     ''''
     This function returns a binary value of whether the animal was still for all last n seconds. Can be used as a demarcation of 
     whether the animal was sleeping.
+    Returns True if animal was for WHOLE interval under threshold
+    Parameters
+    ---------
+    speed_series : pandas dataframe
+        contains indexed speed data of animal
+    speed_threshold_sleep : float
+        limit of tolerance to define sleeping animal
+        -> maybe put a recommendation / default value here?
+    length_no_premovement : int
+        length of the interval of interest (in seconds)
+    current_element : int
+        ending point of the interval of interest (in seconds)
+    returns
+    ---------
+    sleep : boolean
+        True - animal was sleeping for time interval
     '''
     current_element = pd.Timedelta(current_element, unit='s')
     start_time = current_element - pd.Timedelta(seconds=length_no_pre_movement)
@@ -26,6 +45,8 @@ def awake_border_detection(speed_series, speed_threshold_sleep, length_no_pre_mo
     ''''
     This function returns a binary value of whether there was movement in the last n seconds. Can be used as a demarcation of 
     whether the animal is wake in rest epoch.
+    Just reversed sleep_border_detection
+    returns True if animals was ONCE in onterval over treshold
     '''
     current_element = pd.Timedelta(current_element, unit='s')
     start_time = current_element - pd.Timedelta(seconds=length_no_pre_movement)
@@ -39,16 +60,35 @@ def awake_border_detection(speed_series, speed_threshold_sleep, length_no_pre_mo
 
 
 def subdivision_run_sleep_rest_times_dict(speed_series, speed_threshold_sleep, length_no_pre_movement, epoch_type, awake_last_n_seconds):
-    #Do I need speed and head_speed, or is running also individuated by head_speed?
-    #I think I have to give the rest/sleep epoch as an input arguement since it may be relative to the epoch.
-    
-    if epoch_type == 'resting':
-        rest_epoch = True
-        run_epoch = False
-    if epoch_type == 'running':
-        run_epoch = True
-        rest_epoch = False
-        
+    '''
+    Assigns all elements of speed_series to one of 3 pandas Series:
+        awake, resting or sleeping
+    Each dictionary exists twice, depending on the epoch_type
+    The 6 pandas Series (3 will be empty) are returned in a dictionary
+
+    Parameters
+    ----------
+    speed_series : pandas series
+        contains multiple pandas Series of indexed speed data
+    speed_threshold_sleep : int
+        maximum movement speed so rat would still be considered resting
+        for reference - common criteria in literature:
+            head speed of 4cm/s (Kay et. al. 2020)
+    length_no_premovement : int
+        duration in seconds, for how long the animal must have been under
+        speed_threshold_sleep to consider it sleeping
+    epoch_type : str
+        either "resting" or "running" - where resting simply means not running
+        !! cite nature paper !!
+    awake_last_n_seconds : int
+        duration in seconds where animal must have moved at least once to consider it awake
+
+    returns
+    ----------
+    subdivised_behav_state_dict : dictionary
+        contains 6 pandas series for all behavioral states
+    '''
+
     subdivised_by_behav_state_dict = {}
     
     awake_series_rest = pd.Series()
@@ -59,55 +99,49 @@ def subdivision_run_sleep_rest_times_dict(speed_series, speed_threshold_sleep, l
     resting_series_run = pd.Series()
     sleeping_series_run =  pd.Series()
     
-    for i in speed_series.index:
-        
-        #If the (head?)speed of the animal is above threshold in the run_epoch
-        if speed_series[i]> speed_threshold_sleep and run_epoch == True:  
-            
+    if epoch_type == "resting":
+        for i in speed_series.index:
             temp_series = pd.Series(speed_series[i], index=[i])
-            running_series_run = pd.concat([running_series_run, temp_series])
+
+            #If head_speed is above threshold, then you are "awake"
+            if speed_series[i]> speed_threshold_sleep:  
+                awake_series_rest = pd.concat([awake_series_rest, temp_series])
+            
+            #If the head_speed is below threshold, but it has been above threshold somewhere in the last 7 seconds --> awake
+            elif speed_series[i]< speed_threshold_sleep and awake_border_detection(speed_series, speed_threshold_sleep, awake_last_n_seconds, i) == True:
+                awake_series_rest = pd.concat([awake_series_rest, temp_series])
+            
+            elif speed_series[i] <= speed_threshold_sleep and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == False:
+                #you have to make a buffer condition here that deals with the buffer from the paper (the buffer may be relevant
+                #other analyses methods as well)
+                #I also have to add the SWR condition here
+                resting_series_rest = pd.concat([resting_series_rest, temp_series])
+           
+            elif speed_series[i] <= speed_threshold_sleep and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == True:
+                sleeping_series_rest = pd.concat([sleeping_series_rest, temp_series])
+           
+
+    elif epoch_type == "running":
+        for i in speed_series.index:
+            temp_series = pd.Series(speed_series[i], index=[i])
+
+            #If the (head?)speed of the animal is above threshold in the run_epoch
+            if speed_series[i]> speed_threshold_sleep:  
+                running_series_run = pd.concat([running_series_run, temp_series])
          
-        #If you are in the rest epoch, you are simply not running (that's how they did it in the nature paper)
-        #If you are in the rest period and the head_speed is above threshold, then you are "awake"
-        elif speed_series[i]> speed_threshold_sleep and rest_epoch:  
-            
-            temp_series = pd.Series(speed_series[i], index=[i])
-            awake_series_rest = pd.concat([awake_series_rest, temp_series])
-            
-        #If the head_speed is below threshold, but it has been above threshold somewhere in the last 7 seconds --> awake
-        elif speed_series[i]< speed_threshold_sleep and awake_border_detection(speed_series, speed_threshold_sleep, awake_last_n_seconds, i) == True and rest_epoch:
-            
-            temp_series = pd.Series(speed_series[i], index=[i])
-            awake_series_rest = pd.concat([awake_series_rest, temp_series])
-            
-            
-            
-        #if youre resting, in run or rest epoch
-        elif speed_series[i] <= speed_threshold_sleep and run_epoch and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == False:
-            #you have to make a buffer condition here that deals with the buffer from the paper (the buffer may be relevant
-            #other analyses methods as well)
-            #I also have to add the SWR condition here
-            temp_series = pd.Series(speed_series[i], index=[i])
-            resting_series_run = pd.concat([resting_series_run, temp_series])
-            
-        elif speed_series[i] <= speed_threshold_sleep and rest_epoch and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == False:
-            #you have to make a buffer condition here that deals with the buffer from the paper (the buffer may be relevant
-            #other analyses methods as well)
-            #I also have to add the SWR condition here
-            temp_series = pd.Series(speed_series[i], index=[i])
-            resting_series_rest = pd.concat([resting_series_rest, temp_series])
-            
-            
-            
-        #if youre sleeping (60 s no movement), for either run or rest 
-        elif speed_series[i] <= speed_threshold_sleep and run_epoch and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == True:
-            temp_series = pd.Series(speed_series[i], index=[i])
-            sleeping_series_run = pd.concat([sleeping_series_run, temp_series])
-            
-        elif speed_series[i] <= speed_threshold_sleep and rest_epoch and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == True:
-            temp_series = pd.Series(speed_series[i], index=[i])
-            sleeping_series_rest = pd.concat([sleeping_series_rest, temp_series])
-            
+            #if youre resting, in run or rest epoch
+            elif speed_series[i] <= speed_threshold_sleep and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == False:
+                #you have to make a buffer condition here that deals with the buffer from the paper (the buffer may be relevant
+                #other analyses methods as well)
+                #I also have to add the SWR condition here
+                resting_series_run = pd.concat([resting_series_run, temp_series])
+           
+            #if youre sleeping (60 s no movement), for either run or rest 
+            elif speed_series[i] <= speed_threshold_sleep and sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, i) == True:
+                sleeping_series_run = pd.concat([sleeping_series_run, temp_series])
+
+
+
     subdivised_by_behav_state_dict['sleeping run epoch'] = sleeping_series_run #run epoch AND not above speed threshold for n (60) last seconds  
     subdivised_by_behav_state_dict['resting run epoch'] = resting_series_run #run epoch AND above th. somewhere in last n seconds but not now
     subdivised_by_behav_state_dict['running run epoch'] = running_series_run #run epoch AND head speed above threshold 
@@ -321,4 +355,11 @@ def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals
     return state_day_epoch_neuron_key_dict
 
 
-                
+
+def create_nested_series(n, m):
+    nested_series_list = [pd.Series(range(m)) for i in range(n)]
+    return pd.Series(nested_series_list)      
+
+x = create_nested_series(5,5)
+print(x)
+subdivision_run_sleep_rest_times_dict(x, 3, 2, "resting", 2)

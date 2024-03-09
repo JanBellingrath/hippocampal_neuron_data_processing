@@ -15,7 +15,11 @@ import pandas as pd
 from scipy.io import loadmat
 from os.path import join 
 
-from pipeline.lfp_data_to_dataframe_up_to_date_version import get_trial_time
+try:
+    from pipeline.lfp_data_to_dataframe_up_to_date_version import get_trial_time
+except:
+    from lfp_data_to_dataframe_up_to_date_version import get_trial_time
+
 from loren_frank_data_processing.neurons import get_neuron_info_path, convert_neuron_epoch_to_dataframe
 
 

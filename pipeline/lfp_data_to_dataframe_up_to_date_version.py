@@ -30,8 +30,10 @@ from loren_frank_data_processing.core import reconstruct_time
 # However, I don´t think scripts should rely on modules from different packages in this code
 
 # But as long as modules are imported to files in the main branch, everything should work fine
-from pipeline.utilities import _convert_to_dict
-
+try:
+    from pipeline.utilities import _convert_to_dict
+except:
+    from utilities import _convert_to_dict
 
 Animal = namedtuple('Animal', {'short_name', 'directory'})
 
