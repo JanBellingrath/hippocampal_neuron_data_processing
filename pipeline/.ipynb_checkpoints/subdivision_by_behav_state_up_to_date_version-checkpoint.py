@@ -6,7 +6,8 @@
 try:
     import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
 except:
-    import spike_data_to_dataframe_up_to_date_version
+    import spike_data_to_dataframe_up_to_date_version as sdd
+    
 import numpy as np
 import pandas as pd
 

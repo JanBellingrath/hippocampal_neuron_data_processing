@@ -215,6 +215,8 @@ def get_position_dataframe(epoch_key, animals, use_hmm=True,
       #  return None
 
 def get_data_filename_2(animal, day, file_type):
+    # might be more simple to just read the filenames from the directory 
+    # and enter them somewhere, instead of trying to generate the filenames
     '''Returns the Matlab file name assuming it is in the Raw Data
     directory.
 
@@ -290,6 +292,7 @@ def get_data_structure(animal, day, file_type, variable):
 
 
 def gather_animal_data(animals, max_days=10, max_epochs=10):
+    # why would you put data for different animals into one big data frame?
     """
     Gathers animal data across multiple days and epochs into a single DataFrame.
     

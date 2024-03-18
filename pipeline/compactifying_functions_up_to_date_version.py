@@ -1,67 +1,77 @@
-import numpy as np  
-import pandas as pd
-import matplotlib.pyplot as plt
-from os.path import join
-import dask
-from scipy.io import loadmat
+#!/usr/bin/env python
+# coding: utf-8
+
+
 from collections import namedtuple
 
-import mrestimator as mre
-import spike_data_to_dataframe_final as sdd
-from spike_data_to_dataframe_final import spike_time_index_association
-import pipeline.utilities as u
-from lfp_data_to_dataframe_final import make_tetrode_dataframe, get_trial_time
-import df_subdivision_by_theme as divis
-import subdivision_by_behav_state as behav
-import sum_and_seperate_spike_trains as sum_sep
-#import criticality_analysis as can
+from loren_frank_data_processing.core import logger
 
-import task_new_final as task
+'''
+try:
+  import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
+  import pipeline.subdivision_by_behav_state_up_to_date_version as behav
+  import pipeline.task_up_to_date_version as task
+  import pipeline.df_subdivision_by_theme as divis
+  import pipeline.sum_and_seperate_spike_trains as sum_sep
+'''
+#except:
+if True:
+  import spike_data_to_dataframe_up_to_date_version as sdd
+  import subdivision_by_behav_state_up_to_date_version as behav
+  import task_up_to_date_version as task
+  import df_subdivision_by_theme as divis
+  import sum_and_seperate_spike_trains as sum_sep
 
-import loren_frank_data_processing
-import loren_frank_data_processing.core
-import loren_frank_data_processing.task
-from loren_frank_data_processing.core import logger, get_epochs, get_data_structure, reconstruct_time
-from loren_frank_data_processing.tetrodes import convert_tetrode_epoch_to_dataframe, _get_tetrode_id
-from loren_frank_data_processing.neurons import get_spikes_dataframe, convert_neuron_epoch_to_dataframe, _add_to_dict, _get_neuron_id
-
-
-# In[3]:
 
 
 Animal = namedtuple('Animal', {'short_name', 'directory'})
 
+'''
 conley = Animal('/home/bellijjy/Conley.tar/Conley', 'con')
 dave = Animal('/home/bellijjy/Dave.tar/Dave/Dave', 'dav')
 chapati = Animal('/home/bellijjy/Chapati.tar/Chapati/Chapati', 'cha')
 corriander = Animal('/home/bellijjy/Corriander.tar/Corriander', 'Cor')
 dudley = Animal('/home/bellijjy/Dudley', 'dud')
 bond = Animal('/home/bellijjy/Bond', 'bon')
+'''
+frank = Animal('/local2/Jan/Frank/Frank', 'fra')
+government = Animal('/local2/Jan/Government/Government', 'gov') # for some reason, instead of 'gov', there was 'fra' here
+egypt = Animal('/local2/Jan/Egypt/Egypt', 'egy')
+remy = Animal('/local2/Jan/Remy/Remy', 'remy')
+five = Animal("/home/dekorvyb/Downloads/Fiv", "Fiv")
+bon = Animal("/home/dekorvyb/Downloads/Bon", "bon")
 
 
-
-animals = {'con': Animal('con','/home/bellijjy/Conley.tar/Conley'),
-           'Cor': Animal('Cor','/home/bellijjy/Corriander.tar/Corriander'),
-            'cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati'),
-          'dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave'),
-           'dud': Animal('dud','/home/bellijjy/Dudley'),
-            'bon' : Animal('bon', '/home/bellijjy/Bond')}
-
+animals = {#'con': Animal('con','/home/bellijjy/Conley.tar/Conley'),
+           #'Cor': Animal('Cor','/home/bellijjy/Corriander.tar/Corriander'),
+           # 'cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati'),
+        #  'dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave'),
+         #  'dud': Animal('dud','/home/bellijjy/Dudley'),
+         #   'bon' : Animal('bon', '/home/bellijjy/Bond'),
+    'fra' : Animal('fra', '/local2/Jan/Frank/Frank'),
+    'gov' : Animal('gov', '/local2/Jan/Government/Government'),
+    'egy' : Animal('egy', '/local2/Jan/Egypt/Egypt'), 
+    'remy': Animal('remy', '/local2/Jan/Remy/Remy'),
+    "Fiv" : Animal("Fiv", "/home/dekorvyb/Downloads/Fiv"),
+    "bon" : Animal("bon", "/home/dekorvyb/Downloads/Bon")}
 
 # In[4]:
 
 
-def neuron_ids_for_specific_animal_and_subarea(area, animal):
+def neuron_ids_for_specific_animal_and_subarea(area, animal, animals_dict):
     #Information about all recorded neurons such as brain area.
-    df = sdd.make_neuron_dataframe_modified(animals)
-    
+    df = sdd.make_neuron_dataframe_modified(animals_dict)
+
     #subdividing the meta-index by theme
     splitted_df = divis.split_neuron_dataframe_informationally(df, ['area', 'animal'])
     
     #subdividing to acess task/behav. state -- this is joined with the meta-index above via 'get_matching_pairs' below
     
     #HAVE TO ADD OTHER ANIMAL NAMES
-    splitted_epoch_dataframe = divis.split_neuron_dataframe_informationally(task.make_epochs_dataframe(animals, corriander, conley, dave, dudley, bond, chapati), ['type'])
+
+    # for the sake of computing deleted all animals except for frank:
+    # corriander, conley, dave, dudley, bond, chapati, remy, egypt, government, frank
+    splitted_epoch_dataframe = divis.split_neuron_dataframe_informationally(task.make_epochs_dataframe(animals_dict, egypt, remy, government, frank, bon),['type'])
     
     area_animal_df = splitted_df[area, animal]
     
@@ -96,13 +106,20 @@ def get_spike_data(conjoined_key_epochs_per_day_dict, time_len_splitted_chunks, 
     Returns: embedded dict (day/epoch/time_chunk) with the neuronal data as values and time as index
     '''
     
-    #redefining the animal dict with the short_name appended at the end
-    animals = {'con': Animal('con','/home/bellijjy/Conley.tar/Conley/con'),
-           'Cor': Animal('Cor','/home/bellijjy/Corriander.tar/Corriander/Cor'),
-            'cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati/cha'),
-          'dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave/dav'),
-           'dud': Animal('dud','/home/bellijjy/Dudley/dud'),
-            'bon' : Animal('bon', '/home/bellijjy/Bond/bon')}
+    
+    animals = {#'con': Animal('con','/home/bellijjy/Conley.tar/Conley/con'),
+               #'Cor': Animal('Cor','/home/bellijjy/Corriander.tar/Corriander/Cor'),
+              #  'cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati/cha'),
+             # 'dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave/dav'),
+             #  'dud': Animal('dud','/home/bellijjy/Dudley/dud'),
+             #   'bon' : Animal('bon', '/home/bellijjy/Bond/bon'),
+                  'fra' : Animal('fra', '/local2/Jan/Frank/Frank/fra'),
+                  'gov' : Animal('gov', '/local2/Jan/Government/Government/gov'),
+                'egy' : Animal('egy', '/local2/Jan/Egypt/Egypt/egy'), 
+              'remy': Animal('remy', '/local2/Jan/Remy/Remy/remy'),
+    "Fiv" : Animal("Fiv", "/home/dekorvyb/Downloads/Fiv"),
+          "bon" : Animal("bon", "/home/dekorvyb/Downloads/Bon/bon")}
+
     
     #getting the spike data itself
     spike_dict = behav.coarse_grained_spike_generator_dict(conjoined_key_epochs_per_day_dict, animals)
@@ -118,6 +135,7 @@ def get_spike_data(conjoined_key_epochs_per_day_dict, time_len_splitted_chunks, 
     #subdividing time index into intervals of 5 seconds
     splitted_by_sec_spike_dict = sum_sep.time_index_seperator(spike_dict_summed, time_len_splitted_chunks)
     
+    
     return splitted_by_sec_spike_dict
 
 
@@ -130,12 +148,19 @@ def get_spikes(conjoined_key_epochs_per_day_dict, area, animal):
     '''
     
     #redefining the animal dict with the short_name appended at the end
-    animals = {'con': Animal('con','/home/bellijjy/Conley.tar/Conley/con'),
-           'Cor': Animal('Cor','/home/bellijjy/Corriander.tar/Corriander/Cor'),
-            'cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati/cha'),
-          'dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave/dav'),
-           'dud': Animal('dud','/home/bellijjy/Dudley/dud'),
-            'bon' : Animal('bon', '/home/bellijjy/Bond/bon')}
+
+    animals = {#'con': Animal('con','/home/bellijjy/Conley.tar/Conley/con'),
+              # 'Cor': Animal('Cor','/home/bellijjy/Corriander.tar/Corriander/Cor'),
+              #  'cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati/cha'),
+              #'dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave/dav'),
+              # 'dud': Animal('dud','/home/bellijjy/Dudley/dud'),
+              #  'bon' : Animal('bon', '/home/bellijjy/Bond/bon'),
+                  'fra' : Animal('fra', '/local2/Jan/Frank/Frank'),
+                  'gov' : Animal('gov', 'local2/Jan/Government/Government'),
+                'egy' : Animal('egy', 'local2/Jan/Egypt/Egypt'), 
+              'remy': Animal('remy', 'local2/Jan/Remy/Remy'),
+    "Fiv" : Animal("Fiv", "/home/dekorvyb/Downloads/Fiv"),
+          "bon" : Animal("bon", "/home/dekorvyb/Downloads/Bon")}
     
     #getting the spike data itself
     spike_dict = behav.coarse_grained_spike_generator_dict(conjoined_key_epochs_per_day_dict, animals)
@@ -153,3 +178,7 @@ def get_spikes(conjoined_key_epochs_per_day_dict, area, animal):
 # In[ ]:
 
 
+
+
+print(animals["bon"])
+print(bon)

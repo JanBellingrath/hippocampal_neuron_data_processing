@@ -23,7 +23,7 @@ import mrestimator as mre
 
 import pipeline.utilities as u
 import criticality_analysis as can
-import compactifying_functions as compact
+import old_files.compactifying_functions as compact
 
 
 # ### Defining each animal via its short name and its directory
