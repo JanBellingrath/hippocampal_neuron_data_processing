@@ -355,4 +355,3 @@ def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals
                         
                         
     return state_day_epoch_neuron_key_dict
-

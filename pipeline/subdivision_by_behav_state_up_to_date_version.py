@@ -355,15 +355,14 @@ def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals
                         
     return state_day_epoch_neuron_key_dict
 
-<<<<<<< HEAD
-=======
 
 
 def create_nested_series(n, m):
     nested_series_list = [pd.Series(range(m)) for i in range(n)]
     return pd.Series(nested_series_list)      
 
+'''
 x = create_nested_series(5,5)
 print(x)
 subdivision_run_sleep_rest_times_dict(x, 3, 2, "resting", 2)
->>>>>>> 30af1f7c1f9f03bc8c71c8df50b9b842905bd321
+'''

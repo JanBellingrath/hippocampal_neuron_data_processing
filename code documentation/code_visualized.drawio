@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-03-18T09:12:29.605Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="-ubASKQXtf9xi58h8jQB" version="23.1.5" type="device" pages="12">
+<mxfile host="Electron" modified="2024-03-18T10:56:04.860Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="fRyXGqdnDcwBYkZTGayV" version="23.1.5" type="device" pages="12">
   <diagram id="lewaXbCME_KU3_1PPT6N" name="dependencies">
     <mxGraphModel dx="521" dy="613" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -707,16 +707,40 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="r0oDwx--tBZ_V4ejzp3A-1" value="my_to_scipy_sparse_matrix" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="190" y="270" width="180" height="86" as="geometry" />
+          <mxGeometry x="190" y="270" width="180" height="104" as="geometry" />
         </mxCell>
-        <mxCell id="r0oDwx--tBZ_V4ejzp3A-2" value="+ field: type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-1">
-          <mxGeometry y="26" width="180" height="26" as="geometry" />
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-2" value="converts NetworkX graph into Scipy matrix for further analysis" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-1">
+          <mxGeometry y="26" width="180" height="44" as="geometry" />
         </mxCell>
         <mxCell id="r0oDwx--tBZ_V4ejzp3A-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-1">
-          <mxGeometry y="52" width="180" height="8" as="geometry" />
+          <mxGeometry y="70" width="180" height="8" as="geometry" />
         </mxCell>
         <mxCell id="r0oDwx--tBZ_V4ejzp3A-4" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-1">
-          <mxGeometry y="60" width="180" height="26" as="geometry" />
+          <mxGeometry y="78" width="180" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-5" value="_get_pos_dataframe" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="80" width="160" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-6" value="creates indexed pandas dataframe for movement and positional data of given epoch" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-5">
+          <mxGeometry y="26" width="160" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-5">
+          <mxGeometry y="100" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-8" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-5">
+          <mxGeometry y="108" width="160" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-9" value="get_position_dataframe" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="480" width="250" height="134" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-10" value="relying on loren_frank_data_processing.position to return dataframe with positional data for given epoch" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-9">
+          <mxGeometry y="26" width="250" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-11" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-9">
+          <mxGeometry y="100" width="250" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="r0oDwx--tBZ_V4ejzp3A-12" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="r0oDwx--tBZ_V4ejzp3A-9">
+          <mxGeometry y="108" width="250" height="26" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

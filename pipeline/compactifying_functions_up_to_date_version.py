@@ -6,16 +6,15 @@ from collections import namedtuple
 
 from loren_frank_data_processing.core import logger
 
-'''
+
 try:
   import pipeline.spike_data_to_dataframe_up_to_date_version as sdd
   import pipeline.subdivision_by_behav_state_up_to_date_version as behav
   import pipeline.task_up_to_date_version as task
   import pipeline.df_subdivision_by_theme as divis
   import pipeline.sum_and_seperate_spike_trains as sum_sep
-'''
-#except:
-if True:
+
+except:
   import spike_data_to_dataframe_up_to_date_version as sdd
   import subdivision_by_behav_state_up_to_date_version as behav
   import task_up_to_date_version as task
