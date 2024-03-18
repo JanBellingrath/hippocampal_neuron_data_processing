@@ -6,13 +6,10 @@
 
 from collections import namedtuple
 import pandas as pd
-from logging import getLogger
-import pickle
-import os
-
-import loren_frank_data_processing.position as pos
-import data_analysis_utilitites as da_utilities
-
+from scipy.io import loadmat
+import numpy as np
+import pandas as pd
+from os.path import join
 
 Animal = namedtuple('Animal', {'short_name', 'directory'})
 
@@ -22,8 +19,6 @@ chapati = Animal('/home/bellijjy/Chapati.tar/Chapati/Chapati/cha', 'cha')
 corriander = Animal('/home/bellijjy/Corriander.tar/Corriander/corr', '_Cor')
 dudley = Animal('/home/bellijjy/Dudley/dud', 'dud')
 bond = Animal('/home/bellijjy/Bond/bon', 'bon')
-five = Animal("/home/dekorvyb/Downloads/Fiv", "Fiv")
-bon = Animal("/home/dekorvyb/Downloads/Bon", "bon")
 
 
 #sometimes, due to a error which might occurr in loading dependencies, the animal short_name (e.g '/con', etc.) may have to be
@@ -33,10 +28,13 @@ animals = {'_con': Animal('con','/home/bellijjy/Conley.tar/Conley'),
             '_cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati'),
           '_dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave'),
            '_dud': Animal('dud','/home/bellijjy/Dudley'),
-            #'_bon' : Animal('bon', '/home/bellijjy/Bond'),
-          "_Fiv" : Animal("Fiv", "/home/dekorvyb/Downloads/Fiv"),
-          "_bon" : Animal("bon", "/home/dekorvyb/Downloads/Bon")}
+            '_bon' : Animal('bon', '/home/bellijjy/Bond')}
 
+import loren_frank_data_processing.position as pos
+import loren_frank_data_processing.visualization as viz
+import loren_frank_data_processing.core as core
+import loren_frank_data_processing.track_segment_classification as tsc
+from logging import getLogger
 logger = getLogger(__name__)
 
 
@@ -78,6 +76,9 @@ def associate_time_intervals(segment_info_df, labeled_segments_df):
 # In[6]:
 
 
+import pickle
+import data_analysis_utilitites as da_utilities
+
 def load_object_from_pickle(file_path: str):
     """
     Load and return an object from a pickle file.
@@ -99,6 +100,10 @@ data = da_utilities.load_all_criticality_data_no_duplicate_files('/home/bellijjy
 
 # In[1]:
 
+
+import data_analysis_areas as da_area
+import data_analysis_utilitites as da_utilities
+import data_analysis_sleep_wake as da_wasl
  
 data = da_utilities.load_all_criticality_data_no_duplicate_files('/home/bellijjy/criticality_january_sm', ['_fra','_dud', '_dav', '_con', '_cha', '_Cor', '_egy', '_gov'], area=None, state=None, day=None, epoch=None, time_chunk=None)
 data
@@ -169,9 +174,6 @@ def associate_time_chunks_with_info_df(info_df, big_data_frame, animal, area, da
 
 
 def wrapper_associate_time_chunks(new_df):
-    '''
-    Extracts all unique combinations (epoch_keys) from new_df
-    '''
     # Extract unique combinations of animal, day, epoch
     new_df.drop(['level_0', 'index'], axis=1, inplace=True, errors='ignore')
     unique_combinations = new_df.reset_index()[['animal', 'area', 'day', 'epoch']].drop_duplicates().values.tolist()
@@ -223,6 +225,9 @@ finished_df = wrapper_associate_time_chunks(data)
 
 # In[23]:
 
+
+import os
+import pandas as pd
 
 def store_data_frames(data_frames_list, file_names=['datacomplete2111'], destination_folder='/home/bellijjy', file_type='pickle'):
     """

@@ -21,7 +21,7 @@ import mrestimator as mre
 # In[ ]:
 
 
-import utilities as u
+import pipeline.utilities as u
 import criticality_analysis as can
 import compactifying_functions as compact
 

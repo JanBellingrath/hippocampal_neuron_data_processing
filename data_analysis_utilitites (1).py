@@ -5,12 +5,11 @@
 
 
 import pandas as pd
-import utilities as u
+import pipeline.utilities as u
 import glob
 import json
 import matplotlib.pyplot as plt
 import seaborn as sns
-import utilities as u
 import glob
 import json
 import pingouin as pg

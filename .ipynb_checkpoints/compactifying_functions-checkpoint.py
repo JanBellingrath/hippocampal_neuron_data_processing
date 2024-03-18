@@ -1,5 +1,3 @@
-
-
 import numpy as np  
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,7 +9,7 @@ from collections import namedtuple
 import mrestimator as mre
 import spike_data_to_dataframe_final as sdd
 from spike_data_to_dataframe_final import spike_time_index_association
-import utilities as u
+import pipeline.utilities as u
 from lfp_data_to_dataframe_final import make_tetrode_dataframe, get_trial_time
 import df_subdivision_by_theme as divis
 import subdivision_by_behav_state as behav

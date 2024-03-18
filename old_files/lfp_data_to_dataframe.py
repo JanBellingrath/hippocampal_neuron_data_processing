@@ -10,7 +10,7 @@ from scipy.io import loadmat
 from collections import namedtuple
 
 from loren_frank_data_processing.core import reconstruct_time
-from utilities import _convert_to_dict
+from pipeline.utilities import _convert_to_dict
 
 
 Animal = namedtuple('Animal', {'short_name', 'directory'})
