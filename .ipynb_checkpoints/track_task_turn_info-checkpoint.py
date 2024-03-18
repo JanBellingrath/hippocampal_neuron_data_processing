@@ -19,8 +19,6 @@ chapati = Animal('/home/bellijjy/Chapati.tar/Chapati/Chapati/cha', 'cha')
 corriander = Animal('/home/bellijjy/Corriander.tar/Corriander/corr', '_Cor')
 dudley = Animal('/home/bellijjy/Dudley/dud', 'dud')
 bond = Animal('/home/bellijjy/Bond/bon', 'bon')
-five = Animal("/home/dekorvyb/Downloads/Fiv", "Fiv")
-bon = Animal("/home/dekorvyb/Downloads/Bon", "bon")
 
 
 #sometimes, due to a error which might occurr in loading dependencies, the animal short_name (e.g '/con', etc.) may have to be
@@ -30,9 +28,7 @@ animals = {'_con': Animal('con','/home/bellijjy/Conley.tar/Conley'),
             '_cha': Animal('cha','/home/bellijjy/Chapati.tar/Chapati/Chapati'),
           '_dav': Animal('dav','/home/bellijjy/Dave.tar/Dave/Dave'),
            '_dud': Animal('dud','/home/bellijjy/Dudley'),
-            #'_bon' : Animal('bon', '/home/bellijjy/Bond'),
-          "_Fiv" : Animal("Fiv", "/home/dekorvyb/Downloads/Fiv"),
-          "bon" : Animal("bon", "/home/dekorvyb/Downloads/Bon")}
+            '_bon' : Animal('bon', '/home/bellijjy/Bond')}
 
 import loren_frank_data_processing.position as pos
 import loren_frank_data_processing.visualization as viz
