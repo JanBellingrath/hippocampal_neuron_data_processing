@@ -11,6 +11,34 @@ import numpy as np
 import pandas as pd
 
 
+def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals_dict):
+    '''Input: state_day_epoch_neuron_key_dict: embedded state_day_epoch_neuron_key dict
+        Returns: spike indicator dict of spike trains per day epoch combination
+    '''
+    for state_index in state_day_epoch_neuron_key_dict:
+        for day_index in state_day_epoch_neuron_key_dict[state_index]:
+            for epoch_index in state_day_epoch_neuron_key_dict[state_index][day_index]:
+                for neuron_key_index, neuron_key_str in enumerate(state_day_epoch_neuron_key_dict[state_index][day_index][epoch_index]):
+                    if type(neuron_key_str) == str:
+                        animal_short_name, day_number, epoch_number, tetrode_number, neuron_number = neuron_key_str.split("_")
+                        neuron_key = (animal_short_name, int(day_number), int(epoch_number), int(tetrode_number), int(neuron_number))
+                        spike_time_array = None
+                        try:
+                            spike_time_array = sdd.spike_time_index_association(neuron_key, animals_dict).values.astype(np.int32)
+                            state_day_epoch_neuron_key_dict[state_index][day_index][epoch_index][neuron_key_index] = spike_time_array 
+                            
+                        except AttributeError:
+                            spike_time_array = None
+                            print(f"No spike indicator data for neuron: {neuron_key}")
+                    #neuron_key_counter += 1
+                        
+                        #neuron_key_list = []
+                        #for i in range(len(state_day_epoch_neuron_key_dict[state][day][epoch])-1):
+                         #   neuron_key_list.append(i)
+                            
+    return state_day_epoch_neuron_key_dict
+
+
 def sleep_border_detection(speed_series, speed_threshold_sleep, length_no_pre_movement, current_element):
     ''''
     This function returns a binary value of whether the animal was still for all last n seconds. Can be used as a demarcation of 
@@ -323,33 +351,6 @@ def time_association_behav_state_spike_time(spike_time_array, day_specific_state
             
             
     return state_day_epoch_neuron_key_dict
-
-def coarse_grained_spike_generator_dict(state_day_epoch_neuron_key_dict, animals):
-    '''Input: state_day_epoch_neuron_key_dict: embedded state_day_epoch_neuron_key dict
-        Returns: spike indicator dict of spike trains per day epoch combination
-    '''
-    for state_index in state_day_epoch_neuron_key_dict:
-        for day_index in state_day_epoch_neuron_key_dict[state_index]:
-            for epoch_index in state_day_epoch_neuron_key_dict[state_index][day_index]:
-                #neuron_key_counter = 0
-                for neuron_key_index, neuron_key_str in enumerate(state_day_epoch_neuron_key_dict[state_index][day_index][epoch_index]):
-                    if type(neuron_key_str) == str:
-                        animal_short_name, day_number, epoch_number, tetrode_number, neuron_number = neuron_key_str.split("_")
-                        neuron_key = (animal_short_name, int(day_number), int(epoch_number), int(tetrode_number), int(neuron_number))
-                        spike_time_array = None
-                        try:
-                            spike_time_array = sdd.spike_time_index_association(neuron_key, animals).values.astype(np.int32)
-                            #neuron_key_counter += 1
-                            state_day_epoch_neuron_key_dict[state_index][day_index][epoch_index][neuron_key_index] = spike_time_array 
-                            
-                        except AttributeError:
-                            spike_time_array = None
-                            print(f"No spike indicator data for neuron: {neuron_key}")
-                    #neuron_key_counter += 1
-                        
-                        #neuron_key_list = []
-                        #for i in range(len(state_day_epoch_neuron_key_dict[state][day][epoch])-1):
-                         #   neuron_key_list.append(i)
                             
                         
                         

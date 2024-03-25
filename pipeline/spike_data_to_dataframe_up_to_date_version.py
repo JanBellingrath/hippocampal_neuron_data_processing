@@ -15,12 +15,77 @@ import pandas as pd
 from scipy.io import loadmat
 from os.path import join 
 
+import loren_frank_data_processing.neurons as lf_neurons 
+
 try:
     from pipeline.lfp_data_to_dataframe_up_to_date_version import get_trial_time
 except:
     from lfp_data_to_dataframe_up_to_date_version import get_trial_time
 
-from loren_frank_data_processing.neurons import get_neuron_info_path, convert_neuron_epoch_to_dataframe
+
+
+def make_neuron_dataframe_modified(animals_dict):
+    '''Information about all recorded neurons such as brain area.
+    The index of the dataframe corresponds to the unique key for that neuron
+    and can be used to load spiking information.
+    Parameters
+    ----------
+    animals : dict of named-tuples
+        Dictionary containing information about the directory for each
+        animal. The key is the animal_short_name.
+    Returns
+    -------
+    neuron_information : pandas.DataFrame
+    '''
+
+    neuron_file_names = [(lf_neurons.get_neuron_info_path(animals_dict[animal]), animal) for animal in animals_dict]
+    #print("neuron_file_names:", neuron_file_names)
+    
+    neuron_data = [(loadmat(file_name[0]), animal_name) for animal_name, file_name in zip(animals_dict.keys(), neuron_file_names)]
+
+    return pd.concat([
+        lf_neurons.convert_neuron_epoch_to_dataframe(
+            epoch, animal, day_ind + 1, epoch_ind + 1)
+        for cellfile, animal in neuron_data
+        for day_ind, day in enumerate(cellfile['cellinfo'].T)
+        for epoch_ind, epoch in enumerate(day[0].T)
+    ]).sort_index()
+
+
+def spike_time_index_association(neuron_key, animals, time_function=get_trial_time):
+    ''' Calls get_trial_time for reference of dataframe size.
+    Fits recorded data of neuron into the time bins.
+    Parameters
+    --------
+    neuron_key : tuple
+        key for specific neuron
+    animals : dict
+        file paths to all animal directories
+    time_function : function
+        optional
+        by default get_trial_time
+        determine size of dataframe (total recording time, recording frequency, ...)
+    returns
+    ---------
+    spikes_df : dataframe
+        number of spikes summed up for each time bin (-> activity)
+    '''
+    time = time_function(neuron_key[:3])
+    spikes_df = get_spikes_series(neuron_key, animals)
+    
+    time_index = None
+    
+    try:
+        time_index = np.digitize(spikes_df.index.total_seconds(),
+                             time.total_seconds())
+ 
+        time_index[time_index >= len(time)] = len(time) -1
+        return (spikes_df.groupby(time[time_index]).sum().reindex(index=time, fill_value=0))
+    
+    except AttributeError: 
+        print('No spikes here; data is emtpy')
+        return None
+    
 
 
 def generate_spike_indicator_dict(neuron_key_list, animals):
@@ -70,13 +135,13 @@ def get_data_filename(animal, day, file_type):
     filename : str
         Path to data file
     '''
-    filename = '{animal}{file_type}{day:02d}.mat'.format(
-        animal=animal.directory,
-        file_type=file_type,
+    filename = '{animal_directory}/{animal_short_name}{file_type}{day:02d}.mat'.format(
+        animal_directory=animal.directory,
+        animal_short_name = animal.short_name,
+        file_type = file_type,
         day=day)
 
-
-    return join(animal.short_name, filename)
+    return filename
     
 def get_spikes_series(neuron_key, animals):
     '''Spike times for a particular neuron.
@@ -121,68 +186,9 @@ def get_spikes_series(neuron_key, animals):
 
 
 
-  
-def spike_time_index_association(neuron_key, animals, time_function=get_trial_time):
-    ''' Calls get_trial_time for reference of dataframe size.
-    Fits recorded data of neuron into the time bins.
-    Parameters
-    --------
-    neuron_key : tuple
-        key for specific neuron
-    animals : dict
-        file paths to all animal directories
-    time_function : function
-        optional
-        by default get_trial_time
-        determine size of dataframe (total recording time, recording frequency, ...)
-    returns
-    ---------
-    spikes_df : dataframe
-        number of spikes summed up for each time bin (-> activity)
-    '''
-    time = time_function(neuron_key[:3])
-    spikes_df = get_spikes_series(neuron_key, animals)
-    
-    time_index = None
-    
-    try:
-        time_index = np.digitize(spikes_df.index.total_seconds(),
-                             time.total_seconds())
- 
-        time_index[time_index >= len(time)] = len(time) -1
-        return (spikes_df.groupby(time[time_index]).sum().reindex(index=time, fill_value=0))
-    
-    except AttributeError: 
-        print('No spikes here; data is emtpy')
-        return None
 
 
-def make_neuron_dataframe_modified(animals):
-    '''Information about all recorded neurons such as brain area.
-    The index of the dataframe corresponds to the unique key for that neuron
-    and can be used to load spiking information.
-    Parameters
-    ----------
-    animals : dict of named-tuples
-        Dictionary containing information about the directory for each
-        animal. The key is the animal_short_name.
-    Returns
-    -------
-    neuron_information : pandas.DataFrame
-    '''
 
-    neuron_file_names = [(get_neuron_info_path(animals[animal]), animal) for animal in animals]
-    #print("neuron_file_names:", neuron_file_names)
-    
-    neuron_data = [(loadmat(file_name[0]), animal_name) for animal_name, file_name in zip(animals.keys(), neuron_file_names)]
-
-    return pd.concat([
-        convert_neuron_epoch_to_dataframe(
-            epoch, animal, day_ind + 1, epoch_ind + 1)
-        for cellfile, animal in neuron_data
-        for day_ind, day in enumerate(cellfile['cellinfo'].T)
-        for epoch_ind, epoch in enumerate(day[0].T)
-    ]).sort_index()
 
 
 def time_index_dict(state_day_epoch_neuron_key_dict, animals):

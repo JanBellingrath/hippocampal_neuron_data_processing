@@ -1,13 +1,18 @@
-import pipeline.compactifying_functions_up_to_date_version as compact
 import mrestimator as mre
 import numpy as np
 import pandas as pd
 import gc
 import json
 from itertools import product
+import os
+
+try:
+    import pipeline.compactifying_functions_up_to_date_version as compact
+except:
+    import compactifying_functions_up_to_date_version as compact
 
 
-def intrinsic_time_scale_estimation_for_all_animals(animal_list, area_list, len_time_chunk, animals_dict, mode="smooth"):
+def intrinsic_time_scale_estimation_for_all_animals(animal_list, area_list, len_time_chunk, animals_dict, target_directory, mode="smooth", check_duplicates = False):
     '''
     iterates over animal_list and area_list.
     Mode either set to "smooth" (automatic error handling),
@@ -19,7 +24,7 @@ def intrinsic_time_scale_estimation_for_all_animals(animal_list, area_list, len_
             if mode == "smooth":
                 try:
                     print(f"Processing for animal: {animal}, area: {area}")
-                    intrinsic_time_scale_estimation(animal, area, len_time_chunk, animals_dict)
+                    intrinsic_time_scale_estimation(animal, area, len_time_chunk, animals_dict, target_directory, check_duplicates)
             
                 except Exception as e:
                     print(f"Error processing for animal: {animal}, area: {area}. Error: {e}")
@@ -27,45 +32,76 @@ def intrinsic_time_scale_estimation_for_all_animals(animal_list, area_list, len_
 
             elif mode == "debug":
                 print(f"Processing for animal: {animal}, area: {area}")
-                intrinsic_time_scale_estimation(animal, area, len_time_chunk)
+                intrinsic_time_scale_estimation(animal, area, len_time_chunk, animals_dict, target_directory, check_duplicates)
                 
     return 'All combinations processed'
 
 
 
-def intrinsic_time_scale_estimation(animal, area, len_time_chunk, animals_dict):
+def intrinsic_time_scale_estimation(animal, area, len_time_chunk, animals_dict, target_directory, check_duplicates):
     '''
     gets the unique neuron_ids for animal and area.
     '''
     neuron_ids = compact.neuron_ids_for_specific_animal_and_subarea(area, animal, animals_dict)
-    splitted_by_sec_spike_dict = compact.get_spike_data(neuron_ids, len_time_chunk, area, animal)
-    compute_rk_and_tau_from_splitted_by_sec_spike_dict_trial_seperated(splitted_by_sec_spike_dict, animal, area)
+    splitted_by_sec_spike_dict = compact.get_spike_data(neuron_ids, len_time_chunk, area, animal, animals_dict)
+    compute_rk_and_tau_from_splitted_by_sec_spike_dict_trial_seperated(splitted_by_sec_spike_dict, animal, area, target_directory, check_duplicates)
     return 'Done'
 
 
 
-# Define your coefficient function
-def get_coefficients_trial_seperated(spike_dict, state, day, epoch, time_chunk):
-    return mre.coefficients(spike_dict[state][day][epoch][time_chunk], dt=6.67, dtunit='ms', method = 'ts')
-
-#probably need to add padding below
-def get_coefficients_stationary_mean(spike_dict, state, day, epoch):
-    #extracting all values (in an array for each time_chunk) per epoch (per stat, day)
-    all_time_chunks = spike_dict[state][day][epoch].values()
-    # Assuming each time_chunk is a 1D array, combine them into a 2D array (num_trials, data_length)
-    combined_trials = np.stack(all_time_chunks)
-
-    # Calculate coefficients using the specified method for the combined trials
-    coefficients = mre.coefficients(combined_trials, dt=6.67, dtunit='ms', method= 'sm')
+def compute_rk_and_tau_from_splitted_by_sec_spike_dict_trial_seperated(spike_dict, animal, area, target_directory, check_duplicates): # this function may need updating
+    states = spike_dict.keys()
+    days = list(set(day for state in states for day in spike_dict[state].keys()))
+    epochs = list(set(epoch for state in states for day in days if day in spike_dict[state] for epoch in spike_dict[state][day].keys()))
+    time_chunks = list(set(time_chunk for state in states for day in days if day in spike_dict[state] for epoch in epochs if epoch in spike_dict[state][day] for time_chunk in spike_dict[state][day][epoch].keys()))
     
-    return coefficients
-
+    #total_time_chunks = len(time_chunks)
+    #progress_bar = tqdm(total=total_time_chunks, desc="Processing", bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}')
     
-# Define your fit function
-def fitting(coefficients):
-    return mre.fit(coefficients.coefficients, fitfunc='f_complex')
+    if check_duplicates:
+        files = os.listdir(target_directory)
 
-def process_time_chunk(spike_dict, state, day, epoch, animal, area, method, time_chunk):
+
+    for state, day, epoch, time_chunk in product(states, days, epochs, time_chunks):
+        if state in spike_dict and day in spike_dict[state] and epoch in spike_dict[state][day] and time_chunk in spike_dict[state][day][epoch]:
+
+            try:
+                
+                
+                if check_duplicates:
+                    # check if filename already exists in target_directory. If so, process_time_chunk will be skipped
+
+                # as soon as the filename does not yet exist in the target directory, process_time_chunk will be executed
+                # Furthermore, the test will no longer be executed
+                # this assumes that files are already processed in the same order
+                # Therefore, once you reached the point where a file does npt yet exist, you can assume that all the following files won´t exist either
+                # Comes in especially handy, since this assumption is only for one animal-area combination and for a new combination, it will be again checked for duplicates.
+
+                    if f'{target_directory}_{animal}_{area}_{state}_{day}_{epoch}_{time_chunk}.parquet' in files:
+                        raise FileExistsError
+                    
+                    else:
+                        check_duplicates = False
+
+                process_time_chunk(spike_dict, state, day, epoch, animal, area, time_chunk, target_directory, method = 'ts')
+
+
+            except FileExistsError as e:
+                print(f"Error processing for state: {state}, day: {day}, epoch; {epoch}. Error: {e}")
+                continue
+
+            except Exception as e:
+                print(f"Error processing for state: {state}, day: {day}, epoch; {epoch}. Error: {e}")
+                continue
+                
+            gc.collect()
+            
+    #progress_bar.close()
+    return ('Finished and saved to disk')
+
+
+
+def process_time_chunk(spike_dict, state, day, epoch, animal, area, time_chunk, target_directory, method = "ts"):
     
     if method == 'sm':
         
@@ -172,33 +208,35 @@ def process_time_chunk(spike_dict, state, day, epoch, animal, area, method, time
         df = pd.DataFrame([data])
 
         # Save individual time_chunk to disk
-        directory = "/home/dekorvyb/Documents/gov_CA3/"
         
-        file_name = f'{directory}_{animal}_{area}_{state}_{day}_{epoch}_{time_chunk}.parquet'
+        file_name = f'{target_directory}_{animal}_{area}_{state}_{day}_{epoch}_{time_chunk}.parquet'
         df.to_parquet(file_name, index=True)
                             
 
-def compute_rk_and_tau_from_splitted_by_sec_spike_dict_trial_seperated(spike_dict, animal, area): # this function may need updating
-    states = spike_dict.keys()
-    days = list(set(day for state in states for day in spike_dict[state].keys()))
-    epochs = list(set(epoch for state in states for day in days if day in spike_dict[state] for epoch in spike_dict[state][day].keys()))
-    time_chunks = list(set(time_chunk for state in states for day in days if day in spike_dict[state] for epoch in epochs if epoch in spike_dict[state][day] for time_chunk in spike_dict[state][day][epoch].keys()))
+
+# Define your coefficient function
+def get_coefficients_trial_seperated(spike_dict, state, day, epoch, time_chunk):
+    return mre.coefficients(spike_dict[state][day][epoch][time_chunk], dt=6.67, dtunit='ms', method = 'ts')
+
+#probably need to add padding below
+def get_coefficients_stationary_mean(spike_dict, state, day, epoch):
+    #extracting all values (in an array for each time_chunk) per epoch (per stat, day)
+    all_time_chunks = spike_dict[state][day][epoch].values()
+    # Assuming each time_chunk is a 1D array, combine them into a 2D array (num_trials, data_length)
+    combined_trials = np.stack(all_time_chunks)
+
+    # Calculate coefficients using the specified method for the combined trials
+    coefficients = mre.coefficients(combined_trials, dt=6.67, dtunit='ms', method= 'sm')
     
-    total_time_chunks = len(time_chunks)
-    #progress_bar = tqdm(total=total_time_chunks, desc="Processing", bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}')
+    return coefficients
+
     
-    for state, day, epoch, time_chunk in product(states, days, epochs, time_chunks):
-        if state in spike_dict and day in spike_dict[state] and epoch in spike_dict[state][day] and time_chunk in spike_dict[state][day][epoch]:
-            try:
-                process_time_chunk(spike_dict = spike_dict, state = state, day = day, epoch = epoch, time_chunk = time_chunk, animal = animal, area = area, method = 'ts')
-            except Exception as e:
-                print(f"Error processing for state: {state}, day: {day}, epoch; {epoch}. Error: {e}")
-                continue
-                
-            gc.collect()
-            
-    #progress_bar.close()
-    return ('Finished and saved to disk')
+# Define your fit function
+def fitting(coefficients):
+    return mre.fit(coefficients.coefficients, fitfunc='f_complex')
+
+
+
 
 def compute_rk_and_tau_from_splitted_by_sec_spike_dict_stationary_mean(spike_dict, animal, area): # this function may need updating
     states = spike_dict.keys()

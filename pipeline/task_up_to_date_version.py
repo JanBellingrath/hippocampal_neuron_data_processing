@@ -43,6 +43,34 @@ animals = {#'con': Animal('con','/home/bellijjy/Conley.tar/Conley'),
         "Fiv" : Animal("Fiv", "/home/dekorvyb/Downloads/Fiv"),
           "bon" : Animal("bon", "/home/dekorvyb/Downloads/Bon")}
 
+
+
+def make_epochs_dataframe(animal):
+    '''Experimental conditions for all recording epochs.
+
+    Index is a unique identifying key for that recording epoch.
+
+    Parameters
+    ----------
+    animals : dict of named-tuples
+        Dictionary containing information about the directory for each
+        animal. The key is the animal_short_name.
+    corriander : str
+        Full name of the corriander animal.
+    conley : str
+        Full name of the conley animal.
+
+    Returns
+    -------
+    epoch_information : pandas.DataFrame
+
+    '''
+    #animal_full_names = [corriander, conley, dave, dudley, bond, chapati]
+    
+    return compute_exposure(pd.concat([get_task(animal)]).sort_index())
+
+
+
 def get_task(animal):
     '''Loads all experimental information for all days for a given animal.
 
@@ -72,7 +100,7 @@ def get_task(animal):
         task_files = glob(join(animal.short_name, 'chatask*.mat'))
     elif animal == bond:
         task_files = glob(join(animal.short_name, 'bontask*.mat'))
-    '''
+
     #print("animal:", animal)
     if animal == frank or animal.directory == "fra":
         task_files = glob(join(animal.short_name, 'fratask*.mat'))
@@ -93,8 +121,11 @@ def get_task(animal):
         
     elif animal == remy or animal.directory == "bon":
         task_files = glob(join(animal.short_name, 'bontask*.mat'))
- 
-    print("task_files:", task_files)
+    
+    '''
+
+    task_files = glob(join(animal.directory, f'{animal.short_name}task*.mat'))
+    #print("task_files:", task_files)
     return pd.concat(load_task(task_file, animal) for task_file in task_files)
 
 
@@ -146,34 +177,6 @@ def _count_exposure(df):
     df['exposure'] = np.arange(len(df)) + 1
     return df
 
-
-def make_epochs_dataframe(animals, egypt, remy, government, frank, bon):
-    '''Experimental conditions for all recording epochs.
-
-    Index is a unique identifying key for that recording epoch.
-
-    Parameters
-    ----------
-    animals : dict of named-tuples
-        Dictionary containing information about the directory for each
-        animal. The key is the animal_short_name.
-    corriander : str
-        Full name of the corriander animal.
-    conley : str
-        Full name of the conley animal.
-
-    Returns
-    -------
-    epoch_information : pandas.DataFrame
-
-    '''
-    #animal_full_names = [corriander, conley, dave, dudley, bond, chapati]
-    
-    animal_full_names = [egypt, remy, government, frank, bon]
-    print("animal_full_names:", animal_full_names)
-    return compute_exposure(
-        pd.concat([get_task(animal_name) for animal_name in animal_full_names])
-        .sort_index())
 
 
 # In[4]:
