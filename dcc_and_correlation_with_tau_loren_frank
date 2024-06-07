@@ -1,0 +1,421 @@
+import sys
+import os
+import re
+import pandas as pd
+import matplotlib.pyplot as plt
+import io
+import seaborn as sns
+import glob
+import numpy as np
+from tqdm import tqdm
+from contextlib import contextmanager
+
+
+# Determine the path to the directory containing the modules
+module_path = os.path.abspath('/home/bellijjy/Criticality')
+
+# Add the module path to sys.path
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
+# Now you can import the modules
+import criticality_hlab
+import AV_analysis_BurstT as avb
+import AV_analysis_EXponentErrorComments as av
+
+@contextmanager
+def suppress_output():
+    # Suppress matplotlib plotting functions
+    original_show = plt.show
+    plt.show = lambda *args, **kwargs: None
+    
+    # Redirect stdout and stderr to null
+    old_stdout = sys.stdout
+    old_stderr = sys.stderr
+    sys.stdout = io.StringIO()
+    sys.stderr = io.StringIO()
+    
+    try:
+        yield
+    finally:
+        # Restore original plotting functions
+        plt.show = original_show
+        
+        # Restore stdout and stderr
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+
+def load_all_matching_files_into_dataframe(directory, animal_name, area):
+    all_files = glob.glob(os.path.join(directory, "*.npy"))
+    
+    # Pattern to match files with the specified animal_name and area
+    pattern = re.compile(rf'^{animal_name}_{area}_(\w+_\w+)_(\d+)\.npy$')
+    
+    # Dictionary to hold lists of files grouped by day/epoch
+    file_groups = {}
+    
+    for file in all_files:
+        basename = os.path.basename(file)
+        match = pattern.match(basename)
+        if match:
+            day_epoch = match.group(1)
+            neuron_number = match.group(2)
+            
+            if day_epoch not in file_groups:
+                file_groups[day_epoch] = []
+            file_groups[day_epoch].append(file)
+    
+    matrices = {}
+    
+    for day_epoch, files in tqdm(file_groups.items(), desc="Processing day/epoch combinations"):
+        # Sort files by neuron number
+        files.sort(key=lambda f: int(pattern.match(os.path.basename(f)).group(2)))
+        
+        data_list = [np.load(file) for file in files]
+        
+        if not data_list:
+            continue
+        
+        # Ensure all arrays are two-dimensional
+        data_list = [data.reshape(1, -1) if data.ndim == 1 else data for data in data_list]
+        
+        shape = data_list[0].shape
+        for data in data_list:
+            if data.shape[1] != shape[1]:
+                raise ValueError(f"All files for {animal_name}_{area}_{day_epoch} must have the same number of time points (columns).")
+        
+        # Concatenate along the neuron axis (rows) to form a matrix
+        combined_matrix = np.concatenate(data_list, axis=0)
+        
+        matrices[f"{animal_name}_{area}_{day_epoch}"] = combined_matrix
+    
+    if matrices:
+        df = pd.DataFrame(list(matrices.items()), columns=['Animal_Area_Day_Epoch', 'Matrix'])
+    else:
+        df = pd.DataFrame(columns=["Animal_Area_Day_Epoch", "Matrix"])
+    
+    return df
+
+def analyze_matrices(df):
+    results = []
+    
+    for idx, row in df.iterrows():
+        try:
+            matrix = row['Matrix']
+            index = row['Animal_Area_Day_Epoch']
+            
+        
+            # Run the analysis
+            r = avb.AV_analysis_BurstT(matrix, perc=0)
+            
+            x = r['S'] # x is AVsize
+            y = r['T'] # y is AVdura
+            
+            burstM = 8 # suggest to be 8-20; adjust based on figures from Result3
+            tM = 3    # suggest to be 3-6; adjust based on figures from Result3
+            
+            Result3 = av.AV_analysis_ExponentErrorComments(x, y, burstM, tM, flag=3)
+            
+            # Append the results
+            results.append({'Animal_Area_Day_Epoch': index, 'Result3': Result3})
+        
+        except Exception as e:
+            print(f"Error processing {index}: {e}")
+            results.append({'Animal_Area_Day_Epoch': index, 'Result3': None})
+    
+    # Convert results to DataFrame
+    results_df = pd.DataFrame(results)
+    
+    return results_df
+
+def wrapper_function(directory, animals, areas):
+    combined_results = []
+    
+    for animal in animals:
+        for area in areas:
+            try:
+                # Load the matching files into a DataFrame
+                df = load_all_matching_files_into_dataframe(directory, animal, area)
+                
+                with suppress_output():
+                    results_df = analyze_matrices(df)
+                
+                # Append the results to the combined DataFrame
+                combined_results.append({
+                    'Animal': animal,
+                    'Area': area,
+                    'Results': results_df
+                })
+            except Exception as e:
+                print(f"Error processing {animal} in {area}: {e}")
+    
+    # Convert combined results to a DataFrame
+    combined_df = pd.DataFrame(combined_results)
+    
+    return combined_df
+
+def load_all_matching_parquet_files(directory, animal_names):
+    """
+    Load all parquet files matching the specified animal names into a single DataFrame.
+    
+    Parameters:
+        directory (str): The directory containing the parquet files.
+        animal_names (list): A list of animal names to filter the files.
+        
+    Returns:
+        pd.DataFrame: A combined DataFrame where each row corresponds to the data from files with distinct prefixes for all specified animals.
+    """
+    # List to store dataframes
+    all_dataframes = []
+    
+    for animal_name in animal_names:
+        # Adjusted pattern to correctly match the animal name and prefix
+        prefix_pattern = re.compile(rf'^{animal_name}(_.*?)\d+\.parquet$')
+        
+        all_files = glob.glob(f"{directory}/*.parquet")
+        
+        # Filter files for the specific animal
+        filtered_files = [f for f in all_files if prefix_pattern.match(f.split('/')[-1])]
+        
+        # List to store dataframes for the current animal
+        animal_dataframes = []
+        
+        for file in tqdm(filtered_files, desc=f"Loading parquet files for {animal_name}"):
+            df = pd.read_parquet(file)
+            
+            # Extract the prefix for the index
+            prefix = prefix_pattern.match(file.split('/')[-1]).group(1)
+            
+            # Add a column for the prefix
+            df['Prefix'] = f"{animal_name}{prefix}"
+            
+            animal_dataframes.append(df)
+        
+        # Concatenate all dataframes for the current animal
+        if animal_dataframes:
+            combined_animal_df = pd.concat(animal_dataframes, ignore_index=True)
+            all_dataframes.append(combined_animal_df)
+    
+    # Concatenate all dataframes for all animals
+    if all_dataframes:
+        combined_df = pd.concat(all_dataframes, ignore_index=True)
+    else:
+        combined_df = pd.DataFrame()
+    
+    return combined_df
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from tqdm import tqdm
+
+# Function to extract values based on state filter
+def extract_values(df, state_filter):
+    values = []
+    prefixes = []
+    for _, row in df.iterrows():
+        nested_df = row['Results']
+        if isinstance(nested_df, pd.DataFrame):
+            filtered_df = nested_df[nested_df['Animal_Area_Day_Epoch'].str.contains(state_filter)]
+            for _, nested_row in filtered_df.iterrows():
+                result3 = nested_row['Result3']
+                if result3 is not None and isinstance(result3, tuple):
+                    value = result3[1]  # Access the desired value
+                    if isinstance(value, list) or isinstance(value, np.ndarray):
+                        values.extend(value)
+                        prefixes.extend([nested_row['Animal_Area_Day_Epoch'] + '_'] * len(value))
+                    elif np.isscalar(value):
+                        values.append(value)
+                        prefixes.append(nested_row['Animal_Area_Day_Epoch'] + '_')
+    return prefixes, values
+
+# Function to calculate average tau and branching factor values
+def average_values_by_prefix(df):
+    # Ensure that the dataframe has the necessary columns
+    if 'Prefix' not in df.columns or 'tau' not in df.columns or 'branching_factor' not in df.columns:
+        raise ValueError("DataFrame must contain 'Prefix', 'tau', and 'branching_factor' columns.")
+    
+    # Split the Prefix column into separate columns for animal, area, day, and epoch
+    df[['Animal', 'Area', 'Day', 'Epoch']] = df['Prefix'].str.extract(r'(\w+)_([\w\d]+)_(\d{2})_(\d{2})', expand=True)
+    
+    # Group by the separated columns and calculate the average tau and branching factor
+    avg_values_df = df.groupby(['Animal', 'Area', 'Day', 'Epoch']).agg({'tau': 'mean', 'branching_factor': 'mean'}).reset_index()
+    
+    # Combine the columns back into a single Prefix column
+    avg_values_df['Prefix'] = avg_values_df['Animal'] + '_' + avg_values_df['Area'] + '_' + avg_values_df['Day'] + '_' + avg_values_df['Epoch'] + '_'
+    
+    # Rearrange columns to have Prefix first if desired
+    avg_values_df = avg_values_df[['Prefix', 'tau', 'branching_factor', 'Animal', 'Area', 'Day', 'Epoch']]
+    
+    return avg_values_df
+
+# Function to plot violin plots and compute correlations
+def plot_violin_and_correlate(df, combined_df, animals):
+    avg_values_df = average_values_by_prefix(df)
+    
+    for animal in animals:
+        animal_df = combined_df[combined_df['Animal'] == animal]
+        wake_prefixes, wake_values = extract_values(animal_df, 'wake')
+        sleep_prefixes, sleep_values = extract_values(animal_df, 'sleep')
+
+        if not wake_values and not sleep_values:
+            print(f"No data available for animal: {animal}")
+            continue
+        
+        # Create a DataFrame for plotting
+        plot_df = pd.DataFrame({
+            'State': ['wake'] * len(wake_values) + ['sleep'] * len(sleep_values),
+            'Value': wake_values + sleep_values,
+            'Prefix': wake_prefixes + sleep_prefixes
+        })
+        
+        if plot_df.empty:
+            print(f"No data to plot for animal: {animal}")
+            continue
+        
+        # Merge with average tau and branching factor values
+        merged_df = pd.merge(plot_df, avg_values_df, on='Prefix', how='inner')
+
+        
+        # Calculate correlations
+        correlation_tau = merged_df[['tau', 'Value']].corr().iloc[0, 1]
+        correlation_branching = merged_df[['branching_factor', 'Value']].corr().iloc[0, 1]
+        
+        try:
+            fig, axes = plt.subplots(1, 3, figsize=(27, 6))
+
+            # Create the violin plot
+            sns.violinplot(x='State', y='Value', data=plot_df, inner='point', palette='crest', ax=axes[0])
+            
+            # Colors for mean and median lines
+            colors = {
+                'wake': ('blue', 'blue'),
+                'sleep': ('cyan', 'cyan')
+            }
+            
+            # Calculate and plot mean and median values with different colors
+            for state in ['wake', 'sleep']:
+                state_values = plot_df[plot_df['State'] == state]['Value']
+                if not state_values.empty:
+                    mean_value = state_values.mean()
+                    median_value = state_values.median()
+                    mean_color, median_color = colors[state]
+                    
+                    axes[0].axhline(mean_value, color=mean_color, linestyle='--', label=f'{state} Mean')
+                    axes[0].axhline(median_value, color=median_color, linestyle='-', label=f'{state} Median')
+            
+            # Customize the violin plot
+            axes[0].set_ylim(bottom=0)
+            axes[0].set_title(f'Violin Plot of Values by State for {animal}')
+            axes[0].set_xlabel('State')
+            axes[0].set_ylabel('Value')
+            axes[0].legend()
+            
+            # Create the scatter plot for tau correlation
+            sns.scatterplot(x='tau', y='Value', data=merged_df, ax=axes[1], palette='crest', hue='State')
+            sns.regplot(x='tau', y='Value', data=merged_df, ax=axes[1], scatter=False, color='red')
+            axes[1].set_title(f'Correlation between timescale and dcc for {animal}')
+            axes[1].set_xlabel('Tau')
+            axes[1].set_ylabel('DCC')
+            axes[1].text(0.05, 0.95, f'Correlation: {correlation_tau:.2f}', transform=axes[1].transAxes, 
+                         fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.5))
+            
+            # Create the scatter plot for branching factor correlation
+            sns.scatterplot(x='branching_factor', y='Value', data=merged_df, ax=axes[2], palette='crest', hue='State')
+            sns.regplot(x='branching_factor', y='Value', data=merged_df, ax=axes[2], scatter=False, color='red')
+            axes[2].set_title(f'Correlation between branching factor and dcc for {animal}')
+            axes[2].set_xlabel('Branching Factor')
+            axes[2].set_ylabel('DCC')
+            axes[2].text(0.05, 0.95, f'Correlation: {correlation_branching:.2f}', transform=axes[2].transAxes, 
+                         fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.5))
+            
+            plt.show()
+            
+            print(f"Correlation between tau and values for animal {animal}: {correlation_tau}")
+            print(f"Correlation between branching factor and values for animal {animal}: {correlation_branching}")
+        
+        except ValueError as e:
+            print(f"Error plotting data for animal {animal}: {e}")
+
+def analyze_matrices_and_save(df, save_directory):
+    results = []
+
+    if not os.path.exists(save_directory):
+        os.makedirs(save_directory)
+    
+    for idx, row in df.iterrows():
+        try:
+            matrix = row['Matrix']
+            index = row['Animal_Area_Day_Epoch']
+        
+            # Run the analysis
+            r = avb.AV_analysis_BurstT(matrix, perc=0)
+            
+            x = r['S']  # x is AVsize
+            y = r['T']  # y is AVdura
+            
+            burstM = 8  # suggest to be 8-20; adjust based on figures from Result3
+            tM = 3  # suggest to be 3-6; adjust based on figures from Result3
+            
+            Result3 = av.AV_analysis_ExponentErrorComments(x, y, burstM, tM, flag=3)
+            
+            # Save the result to disk
+            result_filename = f"{index}_result3.npy"
+            result_path = os.path.join(save_directory, result_filename)
+            np.save(result_path, Result3)
+            
+            # Append the results to the list
+            results.append({'Animal_Area_Day_Epoch': index, 'Result3': Result3})
+        
+        except Exception as e:
+            print(f"Error processing {index}: {e}")
+            results.append({'Animal_Area_Day_Epoch': index, 'Result3': None})
+    
+    # Convert results to DataFrame
+    results_df = pd.DataFrame(results)
+    
+    return results_df
+
+def wrapper_function_with_save(directory, animals, areas, save_directory):
+    combined_results = []
+    
+    for animal in animals:
+        for area in areas:
+            try:
+                # Load the matching files into a DataFrame
+                df = load_all_matching_files_into_dataframe(directory, animal, area)
+                
+                with suppress_output():
+                    results_df = analyze_matrices_and_save(df, save_directory)
+                
+                # Append the results to the combined DataFrame
+                combined_results.append({
+                    'Animal': animal,
+                    'Area': area,
+                    'Results': results_df
+                })
+            except Exception as e:
+                print(f"Error processing {animal} in {area}: {e}")
+    
+    # Convert combined results to a DataFrame
+    combined_df = pd.DataFrame(combined_results)
+    
+    return combined_df
+
+# Example usage
+animals = ['con', 'gov', 'Cor', 'fra', 'bon', 'ten', 'mil', 'egy', 'dud', 'dav', 'cha']
+areas = ['CA1', 'CA3']
+
+#getting tau values
+directory_tau = '/local2/Vincent/mr_analysis_with_new_pipeline'
+dataframe = load_all_matching_parquet_files(directory_tau, animals)
+
+#calculating dcc
+directory_spikes = '/local2/Vincent/binned_spiking_data/'
+save_directory = '/local2/Jan/dcc/loren_frank/07_06'
+#combined_df = wrapper_function_with_save(directory_spikes, animals, areas, save_directory)
+combined_df = wrapper_function(directory_spikes, animals, areas)
+
+#plotting and visualizing dcc wake/sleep and correlation with tau & m
+plot_violin_and_correlate(dataframe, combined_df, animals)
